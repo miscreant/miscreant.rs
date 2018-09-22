@@ -27,7 +27,7 @@ pub struct Block {
 impl AesSivStreamExample {
     /// Load examples from aes_siv_stream.tjson
     pub fn load_all() -> Vec<Self> {
-        Self::load_from_file(Path::new("../vectors/aes_siv_stream.tjson"))
+        Self::load_from_file(Path::new("vectors/aes_siv_stream.tjson"))
     }
 
     /// Load examples from a file at the given path
@@ -58,8 +58,7 @@ impl AesSivStreamExample {
                             .as_str()
                             .expect("encoded example")
                             .as_bytes(),
-                    )
-                    .expect("hex encoded"),
+                    ).expect("hex encoded"),
                 blocks: ex["blocks:A<O>"]
                     .as_array()
                     .expect("encoded example")
@@ -74,19 +73,15 @@ impl AesSivStreamExample {
                                     .as_str()
                                     .expect("encoded example")
                                     .as_bytes(),
-                            )
-                            .expect("hex encoded"),
+                            ).expect("hex encoded"),
                         ciphertext: HEXLOWER
                             .decode(
                                 ex["ciphertext:d16"]
                                     .as_str()
                                     .expect("encoded example")
                                     .as_bytes(),
-                            )
-                            .expect("hex encoded"),
-                    })
-                    .collect(),
-            })
-            .collect()
+                            ).expect("hex encoded"),
+                    }).collect(),
+            }).collect()
     }
 }

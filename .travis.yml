@@ -1,69 +1,34 @@
-script: ./ci.sh
+language: rust
+rust: stable
 
-branches:
-  only:
-    - master
+env:
+- RUSTFLAGS=-Ctarget-feature=+aes
 
 matrix:
   fast_finish: true
   allow_failures:
-  - rust: nightly
+  # TODO: fix `no_std` builds
+  - script: cargo build --no-default-features
   include:
-  - language: csharp
-    mono: none
-    dotnet: 2.0.0
-    before_script: cd dotnet
-  - language: go
-    go: 1.9
-    before_script: cd go
-  - language: node_js
-    node_js: 9
-    before_script: cd js
-  - language: python
-    python: 2.7
-    before_script: cd python
-  - language: python
-    python: 3.6
-    before_script: cd python
-  - language: ruby
-    rvm: 2.5.0
-    before_install:
-    - gem update --system
-    - gem --version
-    before_script: cd ruby
-  - language: ruby
-    rvm: 2.2
-    before_script: cd ruby
-  - language: rust
-    rust: stable
-    before_script: cd rust
-    env:
-      - CARGO_FEATURES=--features="aes-soft"
-      - RUSTFLAGS=-Ctarget-feature=+aes
-  - language: rust
-    rust: stable
-    before_script: cd rust
-    env:
-      - RUSTFLAGS=-Ctarget-feature=+aes
-  - language: rust
-    rust: nightly
-    before_script: cd rust
-    env:
-      - CARGO_FEATURES=--features="aes-soft,nightly"
-      - RUSTFLAGS=-Ctarget-feature=+aes
-  - language: rust
-    rust: nightly
-    before_script: cd rust
-    env:
-      - CARGO_FEATURES=--features="aes-soft,nightly"
-      - RUSTFLAGS=-Ctarget-feature=+aes
-  - language: rust
-    rust: nightly
-    before_script: cd rust/tests/ffi
-    env:
-      - CC=clang
-      - LDFLAGS=-rtlib=compiler-rt
-      - RUSTFLAGS=-Ctarget-feature=+aes
-    script:
-      - make
-      - ./ffi_test
+  - name: audit
+    install: cargo install cargo-audit
+    script: cargo check && cargo audit
+  - name: rustfmt
+    install: rustup component add rustfmt-preview
+    script: cargo fmt -- --check
+  - name: clippy
+    install: rustup component add clippy-preview
+    script: cargo clippy
+  - name: build --no-default-features
+    script: cargo build --no-default-features
+  - name: build --release
+    script: cargo build --release
+  - name: test (rust 1.27)
+    rust: 1.27.0
+    script: cargo test
+  - name: test (rust stable)
+    script: cargo test
+
+branches:
+  only:
+  - master

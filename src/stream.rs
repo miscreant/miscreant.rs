@@ -183,7 +183,8 @@ impl NonceEncoder32 {
 
     /// Increment the nonce value in-place
     pub fn increment(&mut self) {
-        self.counter = self.counter
+        self.counter = self
+            .counter
             .checked_add(1)
             .expect("STREAM nonce counter overflowed");
 

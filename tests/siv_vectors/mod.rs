@@ -20,7 +20,7 @@ pub struct AesSivExample {
 impl AesSivExample {
     /// Load examples from aes_siv.tjson
     pub fn load_all() -> Vec<Self> {
-        Self::load_from_file(Path::new("../vectors/aes_siv.tjson"))
+        Self::load_from_file(Path::new("vectors/aes_siv.tjson"))
     }
 
     /// Load examples from a file at the given path
@@ -50,26 +50,22 @@ impl AesSivExample {
                         HEXLOWER
                             .decode(ex.as_str().expect("encoded example").as_bytes())
                             .expect("hex encoded")
-                    })
-                    .collect(),
+                    }).collect(),
                 plaintext: HEXLOWER
                     .decode(
                         ex["plaintext:d16"]
                             .as_str()
                             .expect("encoded example")
                             .as_bytes(),
-                    )
-                    .expect("hex encoded"),
+                    ).expect("hex encoded"),
                 ciphertext: HEXLOWER
                     .decode(
                         ex["ciphertext:d16"]
                             .as_str()
                             .expect("encoded example")
                             .as_bytes(),
-                    )
-                    .expect("hex encoded"),
-            })
-            .collect()
+                    ).expect("hex encoded"),
+            }).collect()
     }
 }
 
@@ -86,7 +82,7 @@ pub struct AesPmacSivExample {
 impl AesPmacSivExample {
     /// Load examples from aes_pmac_siv.tjson
     pub fn load_all() -> Vec<Self> {
-        Self::load_from_file(Path::new("../vectors/aes_pmac_siv.tjson"))
+        Self::load_from_file(Path::new("vectors/aes_pmac_siv.tjson"))
     }
 
     /// Load examples from a file at the given path
@@ -116,25 +112,21 @@ impl AesPmacSivExample {
                         HEXLOWER
                             .decode(ex.as_str().expect("encoded example").as_bytes())
                             .expect("hex encoded")
-                    })
-                    .collect(),
+                    }).collect(),
                 plaintext: HEXLOWER
                     .decode(
                         ex["plaintext:d16"]
                             .as_str()
                             .expect("encoded example")
                             .as_bytes(),
-                    )
-                    .expect("hex encoded"),
+                    ).expect("hex encoded"),
                 ciphertext: HEXLOWER
                     .decode(
                         ex["ciphertext:d16"]
                             .as_str()
                             .expect("encoded example")
                             .as_bytes(),
-                    )
-                    .expect("hex encoded"),
-            })
-            .collect()
+                    ).expect("hex encoded"),
+            }).collect()
     }
 }

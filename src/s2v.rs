@@ -1,5 +1,5 @@
+use aes::block_cipher_trait::generic_array::typenum::{Unsigned, U16};
 use aes::block_cipher_trait::generic_array::GenericArray;
-use aes::block_cipher_trait::generic_array::typenum::{U16, Unsigned};
 use crypto_mac::Mac;
 use dbl::Dbl;
 

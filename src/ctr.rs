@@ -4,11 +4,11 @@
 //! AES-CTR implementation. We should really get rid of it and leverage the
 //! `Ctr` types in the `block-modes` crate directly.
 
-use aes::{Aes128, Aes256, BlockCipher};
-use aes::block_cipher_trait::generic_array::{ArrayLength, GenericArray};
 use aes::block_cipher_trait::generic_array::typenum::consts::U16;
-use block_modes::{BlockMode, BlockModeIv, Ctr128};
+use aes::block_cipher_trait::generic_array::{ArrayLength, GenericArray};
+use aes::{Aes128, Aes256, BlockCipher};
 use block_modes::block_padding::ZeroPadding;
+use block_modes::{BlockMode, BlockModeIv, Ctr128};
 use clear_on_drop::clear::Clear;
 
 /// Size of the initial counter value in bytes
