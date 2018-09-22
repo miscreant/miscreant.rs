@@ -6,45 +6,26 @@
 [![MIT licensed][license-image]][license-link]
 [![Gitter Chat][gitter-image]][gitter-link]
 
-[crate-image]: https://img.shields.io/crates/v/miscreant.svg
-[crate-link]: https://crates.io/crates/miscreant
-[docs-image]: https://docs.rs/miscreant/badge.svg
-[docs-link]: https://docs.rs/miscreant/
-[build-image]: https://secure.travis-ci.org/miscreant/miscreant.svg?branch=master
-[build-link]: https://travis-ci.org/miscreant/miscreant
-[license-image]: https://img.shields.io/badge/license-MIT/Apache2.0-blue.svg
-[license-link]: https://github.com/miscreant/miscreant/blob/master/LICENSE.txt
-[gitter-image]: https://badges.gitter.im/badge.svg
-[gitter-link]: https://gitter.im/miscreant/Lobby
-
 > The best crypto you've never heard of, brought to you by [Phil Rogaway]
-
-[Phil Rogaway]: https://en.wikipedia.org/wiki/Phillip_Rogaway
 
 Rust implementation of **Miscreant**: Advanced symmetric encryption library
 which provides the [AES-SIV] ([RFC 5297]), [AES-PMAC-SIV], and [STREAM]
 constructions. These algorithms are easy-to-use (or rather, hard-to-misuse)
 and support encryption of individual messages or message streams.
 
-[AES-SIV]: https://github.com/miscreant/miscreant/wiki/AES-SIV
-[RFC 5297]: https://tools.ietf.org/html/rfc5297
-[AES-PMAC-SIV]: https://github.com/miscreant/miscreant/wiki/AES-PMAC-SIV
-[STREAM]: https://github.com/miscreant/miscreant/wiki/STREAM
+[Documentation][docs-link]
 
-**AES-SIV** provides [nonce-reuse misuse-resistance] (NRMR): accidentally
-reusing a nonce with this construction is not a security catastrophe,
-unlike it is with more popular AES encryption modes like [AES-GCM].
+## About AES-SIV and AES-PMAC-SIV
+
+**AES-SIV** and **AES-PMAC-SIV** provide [nonce-reuse misuse-resistance] (NRMR):
+accidentally reusing a nonce with this construction is not a security
+catastrophe, unlike more popular AES encryption modes like [AES-GCM] where
+nonce reuse leaks both the authentication key and the XOR of both plaintexts,
+both of which can potentially be leveraged for *full plaintext recovery attacks*.
+
 With **AES-SIV**, the worst outcome of reusing a nonce is an attacker
 can see you've sent the same plaintext twice, as opposed to almost all other
-AES modes where it can facilitate [chosen ciphertext attacks] and/or
-full plaintext recovery.
-
-For more information, see the [toplevel README.md].
-
-[nonce-reuse misuse-resistance]: https://github.com/miscreant/miscreant/wiki/Nonce-Reuse-Misuse-Resistance
-[AES-GCM]: https://en.wikipedia.org/wiki/Galois/Counter_Mode
-[chosen ciphertext attacks]: https://en.wikipedia.org/wiki/Chosen-ciphertext_attack
-[toplevel README.md]: https://github.com/miscreant/miscreant/blob/master/README.md
+AES modes where it can facilitate [chosen ciphertext attacks].
 
 ## Requirements
 
@@ -69,22 +50,12 @@ You can configure your `~/.cargo/config` to always pass these flags:
 rustflags = ["-Ctarget-feature=+aes"]
 ```
 
-[Intel AES-NI]: https://software.intel.com/en-us/blogs/2012/01/11/aes-ni-in-laymens-terms
-
 ## Help and Discussion
 
 Have questions? Want to suggest a feature or change?
 
 * [Gitter]: web-based chat about **Miscreant** projects including **miscreant.rs**
 * [Google Group]: join via web or email ([miscreant-crypto+subscribe@googlegroups.com])
-
-[Gitter]: https://gitter.im/miscreant/Lobby
-[Google Group]: https://groups.google.com/forum/#!forum/miscreant-crypto
-[miscreant-crypto+subscribe@googlegroups.com]: mailto:miscreant-crypto+subscribe@googlegroups.com?subject=subscribe
-
-## Documentation
-
-[Please see the Rustdocs on docs.rs][docs-link] for API documentation.
 
 ## Security Notice
 
@@ -102,9 +73,6 @@ Use this library at your own risk.
 We abide by the [Contributor Covenant][cc] and ask that you do as well.
 
 For more information, please see [CODE_OF_CONDUCT.md].
-
-[cc]: https://contributor-covenant.org
-[CODE_OF_CONDUCT.md]: https://github.com/miscreant/miscreant/blob/master/CODE_OF_CONDUCT.md
 
 ## Contributing
 
@@ -126,4 +94,28 @@ The Rust implementation of Miscrenant specifically is licensed under either of:
 
 at your option.
 
-[AUTHORS]: https://github.com/miscreant/miscreant/blob/master/AUTHORS.md
+[crate-image]: https://img.shields.io/crates/v/miscreant.svg
+[crate-link]: https://crates.io/crates/miscreant
+[docs-image]: https://docs.rs/miscreant/badge.svg
+[docs-link]: https://docs.rs/miscreant/
+[build-image]: https://secure.travis-ci.org/miscreant/miscreant-rs.svg?branch=master
+[build-link]: https://travis-ci.org/miscreant/miscreant-rs
+[license-image]: https://img.shields.io/badge/license-MIT/Apache2.0-blue.svg
+[license-link]: https://github.com/miscreant/miscreant-rs/blob/master/LICENSE.txt
+[gitter-image]: https://badges.gitter.im/badge.svg
+[gitter-link]: https://gitter.im/miscreant/Lobby
+[Phil Rogaway]: https://en.wikipedia.org/wiki/Phillip_Rogaway
+[AES-SIV]: https://github.com/miscreant/miscreant/wiki/AES-SIV
+[RFC 5297]: https://tools.ietf.org/html/rfc5297
+[AES-PMAC-SIV]: https://github.com/miscreant/miscreant/wiki/AES-PMAC-SIV
+[STREAM]: https://github.com/miscreant/miscreant/wiki/STREAM
+[nonce-reuse misuse-resistance]: https://github.com/miscreant/miscreant/wiki/Nonce-Reuse-Misuse-Resistance
+[AES-GCM]: https://en.wikipedia.org/wiki/Galois/Counter_Mode
+[chosen ciphertext attacks]: https://en.wikipedia.org/wiki/Chosen-ciphertext_attack
+[Intel AES-NI]: https://software.intel.com/en-us/blogs/2012/01/11/aes-ni-in-laymens-terms
+[Gitter]: https://gitter.im/miscreant/Lobby
+[Google Group]: https://groups.google.com/forum/#!forum/miscreant-crypto
+[miscreant-crypto+subscribe@googlegroups.com]: mailto:miscreant-crypto+subscribe@googlegroups.com?subject=subscribe
+[cc]: https://contributor-covenant.org
+[CODE_OF_CONDUCT.md]: https://github.com/miscreant/miscreant/blob/master/CODE_OF_CONDUCT.md
+[AUTHORS]: https://github.com/miscreant/miscreant-rs/blob/master/AUTHORS.md

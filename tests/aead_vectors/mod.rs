@@ -22,7 +22,7 @@ pub struct AesSivAeadExample {
 impl AesSivAeadExample {
     /// Load examples from aes_siv_aead.tjson
     pub fn load_all() -> Vec<Self> {
-        Self::load_from_file(Path::new("../vectors/aes_siv_aead.tjson"))
+        Self::load_from_file(Path::new("vectors/aes_siv_aead.tjson"))
     }
 
     /// Load examples from a file at the given path
@@ -56,25 +56,21 @@ impl AesSivAeadExample {
                             .as_str()
                             .expect("encoded example")
                             .as_bytes(),
-                    )
-                    .expect("hex encoded"),
+                    ).expect("hex encoded"),
                 plaintext: HEXLOWER
                     .decode(
                         ex["plaintext:d16"]
                             .as_str()
                             .expect("encoded example")
                             .as_bytes(),
-                    )
-                    .expect("hex encoded"),
+                    ).expect("hex encoded"),
                 ciphertext: HEXLOWER
                     .decode(
                         ex["ciphertext:d16"]
                             .as_str()
                             .expect("encoded example")
                             .as_bytes(),
-                    )
-                    .expect("hex encoded"),
-            })
-            .collect()
+                    ).expect("hex encoded"),
+            }).collect()
     }
 }

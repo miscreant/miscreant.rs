@@ -2,16 +2,16 @@
 //! Symmetric encryption which ensures message confidentiality, integrity,
 //! and authenticity.
 
-use aes::{Aes128, Aes256};
-use aes::block_cipher_trait::BlockCipher;
-use aes::block_cipher_trait::generic_array::{ArrayLength, GenericArray};
 use aes::block_cipher_trait::generic_array::typenum::{U16, U32, U64};
+use aes::block_cipher_trait::generic_array::{ArrayLength, GenericArray};
+use aes::block_cipher_trait::BlockCipher;
+use aes::{Aes128, Aes256};
 use cmac::Cmac;
 use core::marker::PhantomData;
 use crypto_mac::Mac;
-use ctr::{Aes128Ctr, Aes256Ctr, Ctr};
 #[cfg(feature = "std")]
 use ctr::IV_SIZE;
+use ctr::{Aes128Ctr, Aes256Ctr, Ctr};
 use error::Error;
 use pmac::Pmac;
 use siv::Siv;
