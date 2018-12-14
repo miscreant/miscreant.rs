@@ -23,7 +23,7 @@ cmac = "0.1"
 dbl = "0.1"
 pmac = "0.1"
 ring = { version = "0.13", optional = true }
-subtle = { version = "0.3", default-features = false }
+subtle = { version = "2", default-features = false }
 
 [dev-dependencies]
 data-encoding = "2.0"

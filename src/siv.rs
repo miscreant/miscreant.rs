@@ -12,7 +12,6 @@ use ctr::{Aes128Ctr, Aes256Ctr, Ctr, IV_SIZE};
 use error::Error;
 use pmac::Pmac;
 use s2v::s2v;
-use subtle;
 
 /// The SIV misuse resistant block cipher mode of operation
 pub struct Siv<B, C, M>
@@ -129,7 +128,10 @@ where
         self.ctr.xor_in_place(&iv, &mut ciphertext[IV_SIZE..]);
 
         let actual_tag = s2v(&mut self.mac, associated_data, &ciphertext[IV_SIZE..]);
-        if subtle::slices_equal(actual_tag.as_slice(), &ciphertext[..IV_SIZE]) != 1 {
+
+        use subtle::ConstantTimeEq;
+        let eq: bool = actual_tag.as_slice().ct_eq(&ciphertext[..IV_SIZE]).into();
+        if !eq {
             // Re-encrypt the decrypted plaintext to avoid revealing it
             self.ctr.xor_in_place(&iv, &mut ciphertext[IV_SIZE..]);
             return Err(Error);
