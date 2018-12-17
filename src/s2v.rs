@@ -19,7 +19,7 @@ where
     T: AsRef<[u8]>,
 {
     mac.input(&GenericArray::<u8, M::OutputSize>::default());
-    let mut state = mac.result().code();
+    let mut state = mac.result_reset().code();
 
     for (i, header) in headers.into_iter().enumerate() {
         if i >= MAX_ASSOCIATED_DATA {
@@ -28,7 +28,7 @@ where
 
         state = state.dbl();
         mac.input(header.as_ref());
-        let code = mac.result().code();
+        let code = mac.result_reset().code();
         xor_in_place(&mut state, &code);
     }
 
@@ -46,7 +46,7 @@ where
     };
 
     mac.input(state.as_ref());
-    mac.result().code()
+    mac.result_reset().code()
 }
 
 /// XOR the second argument into the first in-place. Slices do not have to be

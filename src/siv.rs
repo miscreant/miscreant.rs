@@ -137,14 +137,18 @@ where
         let iv = zero_iv_bits(&ciphertext[..IV_SIZE]);
         self.ctr.xor_in_place(&iv, &mut ciphertext[IV_SIZE..]);
 
-        let actual_tag = s2v(&mut self.mac, associated_data, &ciphertext[IV_SIZE..]);
-        if subtle::slices_equal(actual_tag.as_slice(), &ciphertext[..IV_SIZE]) != 1 {
+        let computed_tag = s2v(&mut self.mac, associated_data, &ciphertext[IV_SIZE..]);
+
+        use subtle::ConstantTimeEq;
+        let mac_is_authentic = computed_tag.as_slice().ct_eq(&ciphertext[..IV_SIZE]).into();
+
+        if mac_is_authentic {
+            Ok(&ciphertext[IV_SIZE..])
+        } else {
             // Re-encrypt the decrypted plaintext to avoid revealing it
             self.ctr.xor_in_place(&iv, &mut ciphertext[IV_SIZE..]);
-            return Err(Error);
+            Err(Error)
         }
-
-        Ok(&ciphertext[IV_SIZE..])
     }
 
     /// Encrypt the given plaintext, allocating and returning a Vec<u8> for the ciphertext

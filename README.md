@@ -45,9 +45,6 @@ You can configure your `~/.cargo/config` to always pass these flags:
 rustflags = ["-Ctarget-feature=+aes"]
 ```
 
-To force usage of a software implementation of AES, use the `aes-soft`
-feature flag which enables usage on other CPU architectures.
-
 ## Help and Discussion
 
 Have questions? Want to suggest a feature or change?

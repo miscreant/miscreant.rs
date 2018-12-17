@@ -19,15 +19,15 @@ edition     = "2018"
 crate-type = ["rlib", "staticlib"]
 
 [dependencies]
-aes = "0.1.0"
-crypto-mac = "0.6"
-block-modes = "0.1"
+aes = "0.3"
+crypto-mac = "0.7"
+block-modes = "0.2"
 byteorder = { version = "1.2", default-features = false }
-cmac = "0.1"
-dbl = "0.1"
-pmac = "0.1"
+cmac = "0.2"
+dbl = "0.2"
+pmac = "0.2"
 ring = { version = "0.13", optional = true }
-subtle = { version = "0.3", default-features = false }
+subtle = { version = "2", default-features = false }
 zeroize = { version = "0.4", default-features = false, features = ["linux-backport", "windows"] }
 
 [dev-dependencies]
@@ -35,7 +35,6 @@ data-encoding = "2.0"
 serde_json = "1"
 
 [features]
-aes-soft = ["aes/force_soft"]
 alloc = []
 bench = ["ring"]
 default = ["std"]
