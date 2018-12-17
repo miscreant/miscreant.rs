@@ -1,34 +1,37 @@
 language: rust
-rust: stable
+cache: cargo
+
+branches:
+  only:
+    - master
+
+rust:
+  - 1.31.0
+  - stable
+
+os:
+  - linux
+  - osx
+  - windows
 
 env:
-- RUSTFLAGS=-Ctarget-feature=+aes
+  - RUSTFLAGS=-Ctarget-feature=+aes
 
 matrix:
   fast_finish: true
   allow_failures:
-  # TODO: fix `no_std` builds
-  - script: cargo build --no-default-features
-  include:
-  - name: audit
-    install: cargo install cargo-audit
-    script: cargo check && cargo audit
-  - name: rustfmt
-    install: rustup component add rustfmt-preview
-    script: cargo fmt -- --check
-  - name: clippy
-    install: rustup component add clippy-preview
-    script: cargo clippy
-  - name: build --no-default-features
-    script: cargo build --no-default-features
-  - name: build --release
-    script: cargo build --release
-  - name: test (rust 1.27)
-    rust: 1.27.0
-    script: cargo test
-  - name: test (rust stable)
-    script: cargo test
+    - os: osx
+    - os: windows
 
-branches:
-  only:
-  - master
+install:
+  - rustup component add rustfmt
+  - rustup component add clippy-preview
+  - command -v cargo-audit >/dev/null 2>&1 || cargo install cargo-audit
+
+script:
+  - cargo fmt --all -- --check
+  - cargo clippy --all
+  - cargo build --no-default-features --release
+  - cargo build --release
+  - cargo test --release
+  - cargo doc --no-deps

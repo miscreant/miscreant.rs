@@ -2,8 +2,8 @@ extern crate miscreant;
 
 mod siv_vectors;
 
+use crate::siv_vectors::{AesPmacSivExample, AesSivExample};
 use miscreant::siv::{Aes128PmacSiv, Aes128Siv, Aes256PmacSiv, Aes256Siv};
-use siv_vectors::{AesPmacSivExample, AesSivExample};
 
 #[test]
 fn aes_siv_examples_seal() {
@@ -29,7 +29,8 @@ fn aes_siv_examples_open() {
             32 => Aes128Siv::new(&example.key).open(&example.ad, &example.ciphertext),
             64 => Aes256Siv::new(&example.key).open(&example.ad, &example.ciphertext),
             _ => panic!("unexpected key size: {}", example.key.len()),
-        }.expect("decrypt failure");
+        }
+        .expect("decrypt failure");
 
         assert_eq!(plaintext, example.plaintext);
     }
@@ -59,7 +60,8 @@ fn aes_pmac_siv_examples_open() {
             32 => Aes128PmacSiv::new(&example.key).open(&example.ad, &example.ciphertext),
             64 => Aes256PmacSiv::new(&example.key).open(&example.ad, &example.ciphertext),
             _ => panic!("unexpected key size: {}", example.key.len()),
-        }.expect("decrypt failure");
+        }
+        .expect("decrypt failure");
 
         assert_eq!(plaintext, example.plaintext);
     }

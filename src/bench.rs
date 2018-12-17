@@ -116,7 +116,8 @@ fn bench_aes_gcm_128_encrypt_128_bytes(b: &mut Bencher) {
             &b""[..],
             &mut buffer,
             sealing_key.algorithm().tag_len(),
-        ).unwrap();
+        )
+        .unwrap();
     });
 }
 
@@ -136,7 +137,8 @@ fn bench_aes_gcm_128_encrypt_1024_bytes(b: &mut Bencher) {
             &b""[..],
             &mut buffer,
             sealing_key.algorithm().tag_len(),
-        ).unwrap();
+        )
+        .unwrap();
     });
 }
 
@@ -156,6 +158,7 @@ fn bench_aes_gcm_128_encrypt_16384_bytes(b: &mut Bencher) {
             &b""[..],
             &mut buffer,
             sealing_key.algorithm().tag_len(),
-        ).unwrap();
+        )
+        .unwrap();
     });
 }

@@ -2,13 +2,13 @@ extern crate miscreant;
 
 mod stream_vectors;
 
+use crate::stream_vectors::{AesSivStreamExample, Block};
 use miscreant::aead;
 use miscreant::stream::{Aes128PmacSivDecryptor, Aes128PmacSivEncryptor};
 use miscreant::stream::{Aes128SivDecryptor, Aes128SivEncryptor};
 use miscreant::stream::{Aes256PmacSivDecryptor, Aes256PmacSivEncryptor};
 use miscreant::stream::{Aes256SivDecryptor, Aes256SivEncryptor};
 use miscreant::stream::{Decryptor, Encryptor};
-use stream_vectors::{AesSivStreamExample, Block};
 
 #[test]
 fn aes_siv_stream_examples_seal() {

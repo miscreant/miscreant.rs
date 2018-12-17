@@ -1,17 +1,26 @@
 //! `siv.rs`: The SIV misuse resistant block cipher mode of operation
 
-use aes::block_cipher_trait::generic_array::typenum::{Unsigned, U16};
-use aes::block_cipher_trait::generic_array::ArrayLength;
-use aes::block_cipher_trait::generic_array::GenericArray;
-use aes::block_cipher_trait::BlockCipher;
-use aes::{Aes128, Aes256};
+#[cfg(feature = "alloc")]
+use crate::prelude::*;
+use crate::{
+    ctr::{Aes128Ctr, Aes256Ctr, Ctr, IV_SIZE},
+    error::Error,
+    s2v::s2v,
+};
+use aes::{
+    block_cipher_trait::{
+        generic_array::{
+            typenum::{Unsigned, U16},
+            ArrayLength, GenericArray,
+        },
+        BlockCipher,
+    },
+    Aes128, Aes256,
+};
 use cmac::Cmac;
 use core::marker::PhantomData;
 use crypto_mac::Mac;
-use ctr::{Aes128Ctr, Aes256Ctr, Ctr, IV_SIZE};
-use error::Error;
 use pmac::Pmac;
-use s2v::s2v;
 use subtle;
 
 /// The SIV misuse resistant block cipher mode of operation
@@ -139,7 +148,7 @@ where
     }
 
     /// Encrypt the given plaintext, allocating and returning a Vec<u8> for the ciphertext
-    #[cfg(feature = "std")]
+    #[cfg(feature = "alloc")]
     pub fn seal<I, T>(&mut self, associated_data: I, plaintext: &[u8]) -> Vec<u8>
     where
         I: IntoIterator<Item = T>,
@@ -152,7 +161,7 @@ where
     }
 
     /// Decrypt the given ciphertext, allocating and returning a Vec<u8> for the plaintext
-    #[cfg(feature = "std")]
+    #[cfg(feature = "alloc")]
     pub fn open<I, T>(&mut self, associated_data: I, ciphertext: &[u8]) -> Result<Vec<u8>, Error>
     where
         I: IntoIterator<Item = T>,

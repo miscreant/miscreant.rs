@@ -4,12 +4,15 @@
 //! AES-CTR implementation. We should really get rid of it and leverage the
 //! `Ctr` types in the `block-modes` crate directly.
 
-use aes::block_cipher_trait::generic_array::typenum::consts::U16;
-use aes::block_cipher_trait::generic_array::{ArrayLength, GenericArray};
-use aes::{Aes128, Aes256, BlockCipher};
-use block_modes::block_padding::ZeroPadding;
-use block_modes::{BlockMode, BlockModeIv, Ctr128};
-use clear_on_drop::clear::Clear;
+use aes::{
+    block_cipher_trait::{
+        generic_array::{typenum::consts::U16, ArrayLength, GenericArray},
+        BlockCipher,
+    },
+    Aes128, Aes256,
+};
+use block_modes::{block_padding::ZeroPadding, BlockMode, BlockModeIv, Ctr128};
+use zeroize::Zeroize;
 
 /// Size of the initial counter value in bytes
 pub const IV_SIZE: usize = 16;
@@ -72,7 +75,7 @@ impl Ctr<Aes128> for Aes128Ctr {
 
 impl Drop for Aes128Ctr {
     fn drop(&mut self) {
-        self.key.clear()
+        self.key.zeroize()
     }
 }
 
@@ -101,7 +104,7 @@ impl Ctr<Aes256> for Aes256Ctr {
 
 impl Drop for Aes256Ctr {
     fn drop(&mut self) {
-        self.key.clear()
+        self.key.zeroize()
     }
 }
 
