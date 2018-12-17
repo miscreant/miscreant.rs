@@ -82,10 +82,10 @@ conditions.
 
 Copyright (c) 2017-2018 [The Miscreant Developers][AUTHORS].
 
-The Rust implementation of Miscrenant specifically is licensed under either of:
+**miscreant.rs** is licensed under either of:
 
-* Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
-* MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+- Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+- MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
 
 at your option.
 
@@ -93,10 +93,10 @@ at your option.
 [crate-link]: https://crates.io/crates/miscreant
 [docs-image]: https://docs.rs/miscreant/badge.svg
 [docs-link]: https://docs.rs/miscreant/
-[build-image]: https://secure.travis-ci.org/miscreant/miscreant-rs.svg?branch=master
-[build-link]: https://travis-ci.org/miscreant/miscreant-rs
+[build-image]: https://secure.travis-ci.org/miscreant/miscreant.rs.svg?branch=master
+[build-link]: https://travis-ci.org/miscreant/miscreant.rs
 [license-image]: https://img.shields.io/badge/license-MIT/Apache2.0-blue.svg
-[license-link]: https://github.com/miscreant/miscreant-rs/blob/master/LICENSE.txt
+[license-link]: https://github.com/miscreant/miscreant.rs/blob/master/LICENSE.txt
 [gitter-image]: https://badges.gitter.im/badge.svg
 [gitter-link]: https://gitter.im/miscreant/Lobby
 [Phil Rogaway]: https://en.wikipedia.org/wiki/Phillip_Rogaway
@@ -113,4 +113,4 @@ at your option.
 [miscreant-crypto+subscribe@googlegroups.com]: mailto:miscreant-crypto+subscribe@googlegroups.com?subject=subscribe
 [cc]: https://contributor-covenant.org
 [CODE_OF_CONDUCT.md]: https://github.com/miscreant/miscreant/blob/master/CODE_OF_CONDUCT.md
-[AUTHORS]: https://github.com/miscreant/miscreant-rs/blob/master/AUTHORS.md
+[AUTHORS]: https://github.com/miscreant/miscreant.rs/blob/master/AUTHORS.md
