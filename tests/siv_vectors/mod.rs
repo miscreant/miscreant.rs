@@ -50,22 +50,26 @@ impl AesSivExample {
                         HEXLOWER
                             .decode(ex.as_str().expect("encoded example").as_bytes())
                             .expect("hex encoded")
-                    }).collect(),
+                    })
+                    .collect(),
                 plaintext: HEXLOWER
                     .decode(
                         ex["plaintext:d16"]
                             .as_str()
                             .expect("encoded example")
                             .as_bytes(),
-                    ).expect("hex encoded"),
+                    )
+                    .expect("hex encoded"),
                 ciphertext: HEXLOWER
                     .decode(
                         ex["ciphertext:d16"]
                             .as_str()
                             .expect("encoded example")
                             .as_bytes(),
-                    ).expect("hex encoded"),
-            }).collect()
+                    )
+                    .expect("hex encoded"),
+            })
+            .collect()
     }
 }
 
@@ -112,21 +116,25 @@ impl AesPmacSivExample {
                         HEXLOWER
                             .decode(ex.as_str().expect("encoded example").as_bytes())
                             .expect("hex encoded")
-                    }).collect(),
+                    })
+                    .collect(),
                 plaintext: HEXLOWER
                     .decode(
                         ex["plaintext:d16"]
                             .as_str()
                             .expect("encoded example")
                             .as_bytes(),
-                    ).expect("hex encoded"),
+                    )
+                    .expect("hex encoded"),
                 ciphertext: HEXLOWER
                     .decode(
                         ex["ciphertext:d16"]
                             .as_str()
                             .expect("encoded example")
                             .as_bytes(),
-                    ).expect("hex encoded"),
-            }).collect()
+                    )
+                    .expect("hex encoded"),
+            })
+            .collect()
     }
 }

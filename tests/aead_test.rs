@@ -2,7 +2,7 @@ extern crate miscreant;
 
 mod aead_vectors;
 
-use aead_vectors::AesSivAeadExample;
+use crate::aead_vectors::AesSivAeadExample;
 use miscreant::aead::{Aes128PmacSiv, Aes128Siv, Aes256PmacSiv, Aes256Siv, Algorithm};
 
 #[test]
@@ -77,7 +77,8 @@ fn aes_siv_aead_examples_open() {
                 _ => panic!("unexpected key size: {}", example.key.len()),
             },
             _ => panic!("unexpected algorithm: {}", example.alg),
-        }.expect("decrypt failure");
+        }
+        .expect("decrypt failure");
 
         assert_eq!(plaintext, example.plaintext);
     }

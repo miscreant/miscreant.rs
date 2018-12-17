@@ -2,19 +2,27 @@
 //! Symmetric encryption which ensures message confidentiality, integrity,
 //! and authenticity.
 
-use aes::block_cipher_trait::generic_array::typenum::{U16, U32, U64};
-use aes::block_cipher_trait::generic_array::{ArrayLength, GenericArray};
-use aes::block_cipher_trait::BlockCipher;
-use aes::{Aes128, Aes256};
+#[cfg(feature = "alloc")]
+use crate::{ctr::IV_SIZE, prelude::*};
+use crate::{
+    ctr::{Aes128Ctr, Aes256Ctr, Ctr},
+    error::Error,
+    siv::Siv,
+};
+use aes::{
+    block_cipher_trait::{
+        generic_array::{
+            typenum::{U16, U32, U64},
+            ArrayLength, GenericArray,
+        },
+        BlockCipher,
+    },
+    Aes128, Aes256,
+};
 use cmac::Cmac;
 use core::marker::PhantomData;
 use crypto_mac::Mac;
-#[cfg(feature = "std")]
-use ctr::IV_SIZE;
-use ctr::{Aes128Ctr, Aes256Ctr, Ctr};
-use error::Error;
 use pmac::Pmac;
-use siv::Siv;
 
 /// An AEAD algorithm
 pub trait Algorithm {
@@ -73,7 +81,7 @@ pub trait Algorithm {
     ) -> Result<&'a [u8], Error>;
 
     /// Encrypt the given plaintext, allocating and returning a Vec<u8> for the ciphertext
-    #[cfg(feature = "std")]
+    #[cfg(feature = "alloc")]
     fn seal(&mut self, nonce: &[u8], associated_data: &[u8], plaintext: &[u8]) -> Vec<u8> {
         let mut buffer = vec![0; IV_SIZE + plaintext.len()];
         buffer[IV_SIZE..].copy_from_slice(plaintext);
@@ -82,7 +90,7 @@ pub trait Algorithm {
     }
 
     /// Decrypt the given ciphertext, allocating and returning a Vec<u8> for the plaintext
-    #[cfg(feature = "std")]
+    #[cfg(feature = "alloc")]
     fn open(
         &mut self,
         nonce: &[u8],

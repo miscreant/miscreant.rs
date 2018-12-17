@@ -58,7 +58,8 @@ impl AesSivStreamExample {
                             .as_str()
                             .expect("encoded example")
                             .as_bytes(),
-                    ).expect("hex encoded"),
+                    )
+                    .expect("hex encoded"),
                 blocks: ex["blocks:A<O>"]
                     .as_array()
                     .expect("encoded example")
@@ -73,15 +74,19 @@ impl AesSivStreamExample {
                                     .as_str()
                                     .expect("encoded example")
                                     .as_bytes(),
-                            ).expect("hex encoded"),
+                            )
+                            .expect("hex encoded"),
                         ciphertext: HEXLOWER
                             .decode(
                                 ex["ciphertext:d16"]
                                     .as_str()
                                     .expect("encoded example")
                                     .as_bytes(),
-                            ).expect("hex encoded"),
-                    }).collect(),
-            }).collect()
+                            )
+                            .expect("hex encoded"),
+                    })
+                    .collect(),
+            })
+            .collect()
     }
 }

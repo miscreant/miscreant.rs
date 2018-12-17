@@ -1,9 +1,12 @@
 //! `ffi.rs`: Foreign Function Interface providing C ABI
+//!
+//! TODO: replace this with cbindgen?
 
 // This is the only code in Miscreant allowed to be unsafe
-#![allow(unsafe_code, non_upper_case_globals, unknown_lints, too_many_arguments)]
+#![allow(unsafe_code, non_upper_case_globals, unknown_lints)]
+#![allow(clippy::too_many_arguments)]
 
-use aead;
+use crate::aead;
 use aes::block_cipher_trait::generic_array::typenum::Unsigned;
 use core::{ptr, slice};
 
@@ -206,7 +209,7 @@ unsafe fn aead_encrypt<A: aead::Algorithm>(
     }
 
     *ctlen_p = msglen.checked_add(taglen as u64).expect("overflow");
-    ptr::copy(msg, ct.offset(taglen as isize), msglen as usize);
+    ptr::copy(msg, ct.add(taglen), msglen as usize);
 
     let key_slice = slice::from_raw_parts(key, A::KeySize::to_usize());
     let ct_slice = slice::from_raw_parts_mut(ct, *ctlen_p as usize);
@@ -257,7 +260,7 @@ unsafe fn aead_decrypt<A: aead::Algorithm>(
     }
 
     // Move the message to the beginning of the buffer
-    ptr::copy(msg.offset(taglen as isize), msg, *msglen_p as usize);
+    ptr::copy(msg.add(taglen), msg, *msglen_p as usize);
 
     // Zero out the end of the buffer
     for c in msg_slice[*msglen_p as usize..].iter_mut() {

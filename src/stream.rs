@@ -1,9 +1,13 @@
 //! `stream.rs`: The STREAM online authenticated encryption construction.
 //! See <https://eprint.iacr.org/2015/189.pdf> for definition.
 
-use aead::{self, Aes128PmacSiv, Aes128Siv, Aes256PmacSiv, Aes256Siv};
+#[cfg(feature = "alloc")]
+use crate::prelude::*;
+use crate::{
+    aead::{self, Aes128PmacSiv, Aes128Siv, Aes256PmacSiv, Aes256Siv},
+    error::Error,
+};
 use byteorder::{BigEndian, ByteOrder};
-use error::Error;
 
 /// Size of a nonce required by STREAM in bytes
 pub const NONCE_SIZE: usize = 8;
@@ -60,7 +64,7 @@ impl<A: aead::Algorithm> Encryptor<A> {
 
     /// Encrypt the next message in the stream, allocating and returning a
     /// `Vec<u8>` for the ciphertext
-    #[cfg(feature = "std")]
+    #[cfg(feature = "alloc")]
     pub fn seal_next(&mut self, ad: &[u8], plaintext: &[u8]) -> Vec<u8> {
         let ciphertext = self.alg.seal(self.nonce.as_slice(), ad, plaintext);
         self.nonce.increment();
@@ -69,7 +73,7 @@ impl<A: aead::Algorithm> Encryptor<A> {
 
     /// Encrypt the final message in the stream, allocating and returning a
     /// `Vec<u8>` for the ciphertext
-    #[cfg(feature = "std")]
+    #[cfg(feature = "alloc")]
     pub fn seal_last(mut self, ad: &[u8], plaintext: &[u8]) -> Vec<u8> {
         self.alg.seal(&self.nonce.finish(), ad, plaintext)
     }
@@ -133,7 +137,7 @@ impl<A: aead::Algorithm> Decryptor<A> {
 
     /// Decrypt the next message in the stream, allocating and returning a
     /// `Vec<u8>` for the plaintext
-    #[cfg(feature = "std")]
+    #[cfg(feature = "alloc")]
     pub fn open_next(&mut self, ad: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, Error> {
         let plaintext = self.alg.open(self.nonce.as_slice(), ad, ciphertext)?;
         self.nonce.increment();
@@ -142,7 +146,7 @@ impl<A: aead::Algorithm> Decryptor<A> {
 
     /// Decrypt the next message in the stream, allocating and returning a
     /// `Vec<u8>` for the plaintext
-    #[cfg(feature = "std")]
+    #[cfg(feature = "alloc")]
     pub fn open_last(mut self, ad: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, Error> {
         self.alg.open(&self.nonce.finish(), ad, ciphertext)
     }

@@ -29,15 +29,10 @@ AES modes where it can facilitate [chosen ciphertext attacks].
 
 ## Requirements
 
-miscreant.rs works on stable rust since `1.27`. By default it is built with aesni
-support which requires an x86 instruction set. You can disable this with the `aes-soft`
-feature flag which enables usage on other architectures.
+**miscreant.rs** requires Rust 1.31+.
 
-The default configuration uses the `core::arch` API for stable access to 
-CPU intrinsics, namely the [Intel AES-NI]  instructions which provide a 
-hardware implementation of AES.
-
-To access these features, you will need to pass the following as RUSTFLAGS:
+To enable hardware accelerated AES support on x86/x86_64 using [Intel AES-NI]
+instructions, you will need to pass the following `RUSTFLAGS`:
 
 ```
 RUSTFLAGS=-Ctarget-feature=+aes
@@ -49,6 +44,9 @@ You can configure your `~/.cargo/config` to always pass these flags:
 [build]
 rustflags = ["-Ctarget-feature=+aes"]
 ```
+
+To force usage of a software implementation of AES, use the `aes-soft`
+feature flag which enables usage on other CPU architectures.
 
 ## Help and Discussion
 
