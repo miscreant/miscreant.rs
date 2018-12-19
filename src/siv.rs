@@ -1,58 +1,61 @@
-//! `siv.rs`: The SIV misuse resistant block cipher mode of operation
+//! The Synthetic Initialization Vector (SIV) misuse-resistant block cipher
+//! mode of operation.
 
 #[cfg(feature = "alloc")]
 use crate::prelude::*;
-use crate::{
-    ctr::{Aes128Ctr, Aes256Ctr, Ctr, IV_SIZE},
-    error::Error,
-    s2v::s2v,
-};
-use aes::{
-    block_cipher_trait::{
-        generic_array::{
-            typenum::{Unsigned, U16},
-            ArrayLength, GenericArray,
-        },
-        BlockCipher,
-    },
-    Aes128, Aes256,
-};
+use crate::{error::Error, IV_SIZE};
+use aes::{Aes128, Aes256};
 use cmac::Cmac;
-use core::marker::PhantomData;
 use crypto_mac::Mac;
+use ctr::Ctr128;
+use dbl::Dbl;
+use generic_array::{
+    typenum::{Unsigned, U16},
+    GenericArray,
+};
 use pmac::Pmac;
-use subtle;
+use stream_cipher::{NewStreamCipher, SyncStreamCipher};
+use subtle::ConstantTimeEq;
+use zeroize::Zeroize;
 
-/// The SIV misuse resistant block cipher mode of operation
-pub struct Siv<B, C, M>
+/// Maximum number of header items on the encrypted message
+pub const MAX_HEADERS: usize = 126;
+
+/// GenericArray of bytes which is the size of a synthetic IV
+type SivArray = GenericArray<u8, U16>;
+
+/// Synthetic Initialization Vector (SIV) mode, providing misuse-resistant
+/// authenticated encryption (MRAE).
+pub struct Siv<C, M>
 where
-    B: BlockCipher<BlockSize = U16>,
-    B::ParBlocks: ArrayLength<GenericArray<u8, U16>>,
-    C: Ctr<B>,
-    M: Mac,
+    C: NewStreamCipher<NonceSize = U16> + SyncStreamCipher,
+    M: Mac<OutputSize = U16>,
 {
-    block_cipher: PhantomData<B>,
+    encryption_key: GenericArray<u8, <C as NewStreamCipher>::KeySize>,
     mac: M,
-    ctr: C,
 }
 
+/// SIV modes based on CMAC
+pub type CmacSiv<BlockCipher> = Siv<Ctr128<BlockCipher>, Cmac<BlockCipher>>;
+
+/// SIV modes based on PMAC
+pub type PmacSiv<BlockCipher> = Siv<Ctr128<BlockCipher>, Pmac<BlockCipher>>;
+
 /// AES-CMAC-SIV with a 128-bit key
-pub type Aes128Siv = Siv<Aes128, Aes128Ctr, Cmac<Aes128>>;
+pub type Aes128Siv = CmacSiv<Aes128>;
 
 /// AES-CMAC-SIV with a 256-bit key
-pub type Aes256Siv = Siv<Aes256, Aes256Ctr, Cmac<Aes256>>;
+pub type Aes256Siv = CmacSiv<Aes256>;
 
 /// AES-PMAC-SIV with a 128-bit key
-pub type Aes128PmacSiv = Siv<Aes128, Aes128Ctr, Pmac<Aes128>>;
+pub type Aes128PmacSiv = PmacSiv<Aes128>;
 
 /// AES-PMAC-SIV with a 256-bit key
-pub type Aes256PmacSiv = Siv<Aes256, Aes256Ctr, Pmac<Aes256>>;
+pub type Aes256PmacSiv = PmacSiv<Aes256>;
 
-impl<B, C, M> Siv<B, C, M>
+impl<C, M> Siv<C, M>
 where
-    B: BlockCipher<BlockSize = U16>,
-    B::ParBlocks: ArrayLength<GenericArray<u8, U16>>,
-    C: Ctr<B>,
+    C: NewStreamCipher<NonceSize = U16> + SyncStreamCipher,
     M: Mac<OutputSize = U16>,
 {
     /// Create a new AES-SIV instance
@@ -69,10 +72,15 @@ where
             key.len()
         );
 
+        // Use the first half of the key as the encryption key
+        let encryption_key = GenericArray::clone_from_slice(&key[(key_size / 2)..]);
+
+        // Use the second half of the key as the MAC key
+        let mac = M::new(GenericArray::from_slice(&key[..(key_size / 2)]));
+
         Self {
-            block_cipher: PhantomData,
-            mac: M::new(GenericArray::from_slice(&key[..(key_size / 2)])),
-            ctr: C::new(&key[(key_size / 2)..]),
+            encryption_key,
+            mac,
         }
     }
 
@@ -100,8 +108,8 @@ where
     /// # Panics
     ///
     /// Panics if `plaintext.len()` is less than `M::OutputSize`.
-    /// Panics if `associated_data.len()` is greater than `MAX_ASSOCIATED_DATA`.
-    pub fn seal_in_place<I, T>(&mut self, associated_data: I, plaintext: &mut [u8])
+    /// Panics if `headers.len()` is greater than `MAX_ASSOCIATED_DATA`.
+    pub fn seal_in_place<I, T>(&mut self, headers: I, plaintext: &mut [u8])
     where
         I: IntoIterator<Item = T>,
         T: AsRef<[u8]>,
@@ -110,11 +118,11 @@ where
             panic!("plaintext buffer too small to hold MAC tag!");
         }
 
+        let (siv_tag, msg) = plaintext.split_at_mut(IV_SIZE);
+
         // Compute the synthetic IV for this plaintext
-        let iv = s2v(&mut self.mac, associated_data, &plaintext[IV_SIZE..]);
-        plaintext[..IV_SIZE].copy_from_slice(iv.as_slice());
-        self.ctr
-            .xor_in_place(&zero_iv_bits(&iv), &mut plaintext[IV_SIZE..]);
+        siv_tag.copy_from_slice(&s2v(&mut self.mac, headers, msg));
+        self.xor_with_keystream(siv_tag, msg);
     }
 
     /// Decrypt the given ciphertext in-place, authenticating it against the
@@ -123,7 +131,7 @@ where
     /// Returns a slice containing a decrypted message on success.
     pub fn open_in_place<'a, I, T>(
         &mut self,
-        associated_data: I,
+        headers: I,
         ciphertext: &'a mut [u8],
     ) -> Result<&'a [u8], Error>
     where
@@ -134,19 +142,17 @@ where
             return Err(Error);
         }
 
-        let iv = zero_iv_bits(&ciphertext[..IV_SIZE]);
-        self.ctr.xor_in_place(&iv, &mut ciphertext[IV_SIZE..]);
+        let (siv_tag, msg) = ciphertext.split_at_mut(IV_SIZE);
+        self.xor_with_keystream(siv_tag, msg);
 
-        let computed_tag = s2v(&mut self.mac, associated_data, &ciphertext[IV_SIZE..]);
+        let computed_siv_tag = s2v(&mut self.mac, headers, msg);
+        let siv_tag_is_authentic = computed_siv_tag.as_slice().ct_eq(siv_tag).into();
 
-        use subtle::ConstantTimeEq;
-        let mac_is_authentic = computed_tag.as_slice().ct_eq(&ciphertext[..IV_SIZE]).into();
-
-        if mac_is_authentic {
-            Ok(&ciphertext[IV_SIZE..])
+        if siv_tag_is_authentic {
+            Ok(msg)
         } else {
             // Re-encrypt the decrypted plaintext to avoid revealing it
-            self.ctr.xor_in_place(&iv, &mut ciphertext[IV_SIZE..]);
+            self.xor_with_keystream(siv_tag, msg);
             Err(Error)
         }
     }
@@ -176,21 +182,82 @@ where
         buffer.drain(..IV_SIZE);
         Ok(buffer)
     }
+
+    /// XOR the given buffer with the keystream for the given IV
+    fn xor_with_keystream(&mut self, iv: &[u8], msg: &mut [u8]) {
+        let mut zeroed_iv = SivArray::clone_from_slice(iv);
+
+        // "We zero-out the top bit in each of the last two 32-bit words
+        // of the IV before assigning it to Ctr"
+        //  — http://web.cs.ucdavis.edu/~rogaway/papers/siv.pdf
+        zeroed_iv[8] &= 0x7f;
+        zeroed_iv[12] &= 0x7f;
+
+        C::new(GenericArray::from_slice(&self.encryption_key), &zeroed_iv).apply_keystream(msg);
+    }
 }
 
-/// Zero out the top bits in the last 32-bit words of the IV
+impl<C, M> Drop for Siv<C, M>
+where
+    C: NewStreamCipher<NonceSize = U16> + SyncStreamCipher,
+    M: Mac<OutputSize = U16>,
+{
+    fn drop(&mut self) {
+        self.encryption_key.zeroize()
+    }
+}
+
+/// "S2V" is a vectorized pseudorandom function (sometimes referred to as a
+/// vector MAC or "vMAC") which performs a "dbl"-and-xor operation on the
+/// outputs of a pseudo-random function (CMAC or PMAC).
+///
+/// In the RFC 5297 SIV construction (see Section 2.4), message headers
+/// (e.g. nonce, associated data) and the plaintext are used as inputs to
+/// S2V, together with a message authentication key. The output is the
+/// eponymous "synthetic IV" (SIV), which has a dual role as both
+/// initialization vector (for AES-CTR encryption) and MAC.
+pub fn s2v<M, I, T>(mac: &mut M, headers: I, message: &[u8]) -> GenericArray<u8, U16>
+where
+    M: Mac<OutputSize = U16>,
+    I: IntoIterator<Item = T>,
+    T: AsRef<[u8]>,
+{
+    mac.input(&SivArray::default());
+    let mut state = mac.result_reset().code();
+
+    for (i, header) in headers.into_iter().enumerate() {
+        if i >= MAX_HEADERS {
+            panic!("too many associated data items!");
+        }
+
+        state = state.dbl();
+        mac.input(header.as_ref());
+        let code = mac.result_reset().code();
+        xor_in_place(&mut state, &code);
+    }
+
+    if message.len() >= IV_SIZE {
+        let n = message.len().checked_sub(IV_SIZE).unwrap();
+
+        mac.input(&message[..n]);
+        xor_in_place(&mut state, &message[n..]);
+    } else {
+        state = state.dbl();
+        xor_in_place(&mut state, message);
+        state[message.len()] ^= 0x80;
+    };
+
+    mac.input(state.as_ref());
+    mac.result_reset().code()
+}
+
+/// XOR the second argument into the first in-place. Slices do not have to be
+/// aligned in memory.
+///
+/// Panics if the destination slice is smaller than the source.
 #[inline]
-fn zero_iv_bits(iv: &[u8]) -> [u8; IV_SIZE] {
-    debug_assert_eq!(iv.len(), IV_SIZE, "wrong IV size: {}", iv.len());
-
-    let mut result = [0u8; IV_SIZE];
-    result.copy_from_slice(iv);
-
-    // "We zero-out the top bit in each of the last two 32-bit words
-    // of the IV before assigning it to Ctr"
-    //  — http://web.cs.ucdavis.edu/~rogaway/papers/siv.pdf
-    result[8] &= 0x7f;
-    result[12] &= 0x7f;
-
-    result
+fn xor_in_place(dst: &mut [u8], src: &[u8]) {
+    for (a, b) in dst[..src.len()].iter_mut().zip(src) {
+        *a ^= *b;
+    }
 }

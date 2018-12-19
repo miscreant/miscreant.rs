@@ -1,11 +1,6 @@
-extern crate data_encoding;
-extern crate serde_json;
-
-use self::data_encoding::HEXLOWER;
-pub use self::serde_json::Value as JsonValue;
-use std::fs::File;
-use std::io::Read;
-use std::path::Path;
+pub use serde_json::Value as JsonValue;
+use std::{fs::File, io::Read, path::Path};
+use subtle_encoding::hex;
 
 /// AES-SIV test vectors
 // TODO: switch to the tjson crate (based on serde)
@@ -39,35 +34,31 @@ impl AesSivExample {
         examples
             .into_iter()
             .map(|ex| Self {
-                key: HEXLOWER
-                    .decode(ex["key:d16"].as_str().expect("encoded example").as_bytes())
+                key: hex::decode(ex["key:d16"].as_str().expect("encoded example").as_bytes())
                     .expect("hex encoded"),
                 ad: ex["ad:A<d16>"]
                     .as_array()
                     .expect("encoded example")
                     .iter()
                     .map(|ex| {
-                        HEXLOWER
-                            .decode(ex.as_str().expect("encoded example").as_bytes())
+                        hex::decode(ex.as_str().expect("encoded example").as_bytes())
                             .expect("hex encoded")
                     })
                     .collect(),
-                plaintext: HEXLOWER
-                    .decode(
-                        ex["plaintext:d16"]
-                            .as_str()
-                            .expect("encoded example")
-                            .as_bytes(),
-                    )
-                    .expect("hex encoded"),
-                ciphertext: HEXLOWER
-                    .decode(
-                        ex["ciphertext:d16"]
-                            .as_str()
-                            .expect("encoded example")
-                            .as_bytes(),
-                    )
-                    .expect("hex encoded"),
+                plaintext: hex::decode(
+                    ex["plaintext:d16"]
+                        .as_str()
+                        .expect("encoded example")
+                        .as_bytes(),
+                )
+                .expect("hex encoded"),
+                ciphertext: hex::decode(
+                    ex["ciphertext:d16"]
+                        .as_str()
+                        .expect("encoded example")
+                        .as_bytes(),
+                )
+                .expect("hex encoded"),
             })
             .collect()
     }
@@ -105,35 +96,31 @@ impl AesPmacSivExample {
         examples
             .into_iter()
             .map(|ex| Self {
-                key: HEXLOWER
-                    .decode(ex["key:d16"].as_str().expect("encoded example").as_bytes())
+                key: hex::decode(ex["key:d16"].as_str().expect("encoded example").as_bytes())
                     .expect("hex encoded"),
                 ad: ex["ad:A<d16>"]
                     .as_array()
                     .expect("encoded example")
                     .iter()
                     .map(|ex| {
-                        HEXLOWER
-                            .decode(ex.as_str().expect("encoded example").as_bytes())
+                        hex::decode(ex.as_str().expect("encoded example").as_bytes())
                             .expect("hex encoded")
                     })
                     .collect(),
-                plaintext: HEXLOWER
-                    .decode(
-                        ex["plaintext:d16"]
-                            .as_str()
-                            .expect("encoded example")
-                            .as_bytes(),
-                    )
-                    .expect("hex encoded"),
-                ciphertext: HEXLOWER
-                    .decode(
-                        ex["ciphertext:d16"]
-                            .as_str()
-                            .expect("encoded example")
-                            .as_bytes(),
-                    )
-                    .expect("hex encoded"),
+                plaintext: hex::decode(
+                    ex["plaintext:d16"]
+                        .as_str()
+                        .expect("encoded example")
+                        .as_bytes(),
+                )
+                .expect("hex encoded"),
+                ciphertext: hex::decode(
+                    ex["ciphertext:d16"]
+                        .as_str()
+                        .expect("encoded example")
+                        .as_bytes(),
+                )
+                .expect("hex encoded"),
             })
             .collect()
     }

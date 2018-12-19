@@ -1,8 +1,6 @@
-extern crate miscreant;
-
 mod siv_vectors;
 
-use crate::siv_vectors::{AesPmacSivExample, AesSivExample};
+use self::siv_vectors::{AesPmacSivExample, AesSivExample};
 use miscreant::siv::{Aes128PmacSiv, Aes128Siv, Aes256PmacSiv, Aes256Siv};
 
 #[test]

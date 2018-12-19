@@ -2,31 +2,20 @@
 //! Symmetric encryption which ensures message confidentiality, integrity,
 //! and authenticity.
 
+use crate::{error::Error, siv::Siv};
 #[cfg(feature = "alloc")]
-use crate::{ctr::IV_SIZE, prelude::*};
-use crate::{
-    ctr::{Aes128Ctr, Aes256Ctr, Ctr},
-    error::Error,
-    siv::Siv,
-};
-use aes::{
-    block_cipher_trait::{
-        generic_array::{
-            typenum::{U16, U32, U64},
-            ArrayLength, GenericArray,
-        },
-        BlockCipher,
-    },
-    Aes128, Aes256,
-};
+use crate::{prelude::*, IV_SIZE};
+use aes::{Aes128, Aes256};
 use cmac::Cmac;
-use core::marker::PhantomData;
 use crypto_mac::Mac;
+use ctr::Ctr128;
+use generic_array::{typenum::U16, ArrayLength};
 use pmac::Pmac;
+use stream_cipher::{NewStreamCipher, SyncStreamCipher};
 
-/// An AEAD algorithm
-pub trait Algorithm {
-    /// Size of a key associated with this AEAD algoritm
+/// An Authenticated Encryption with Associated Data (AEAD) algorithm.
+pub trait Aead {
+    /// Size of a key associated with this AEAD algorithm
     type KeySize: ArrayLength<u8>;
 
     /// Size of a MAC tag
@@ -104,49 +93,45 @@ pub trait Algorithm {
     }
 }
 
-/// AEAD interface provider for AES-(PMAC-)SIV types
-pub struct SivAlgorithm<B, C, M, K>
+/// The `SivAead` type wraps the more powerful `Siv` interface in a more
+/// commonly used Authenticated Encryption with Associated Data (AEAD) API,
+/// which accepts a key, nonce, and associated data when encrypting/decrypting.
+pub struct SivAead<C, M>
 where
-    B: BlockCipher<BlockSize = U16>,
-    B::ParBlocks: ArrayLength<GenericArray<u8, U16>>,
-    C: Ctr<B>,
+    C: NewStreamCipher<NonceSize = U16> + SyncStreamCipher,
     M: Mac<OutputSize = U16>,
-    K: ArrayLength<u8>,
 {
-    block_cipher: PhantomData<B>,
-    siv: Siv<B, C, M>,
-    key_size: PhantomData<K>,
+    siv: Siv<C, M>,
 }
 
+/// SIV AEAD modes based on CMAC
+pub type CmacSivAead<BlockCipher> = SivAead<Ctr128<BlockCipher>, Cmac<BlockCipher>>;
+
+/// SIV AEAD modes based on PMAC
+pub type PmacSivAead<BlockCipher> = SivAead<Ctr128<BlockCipher>, Pmac<BlockCipher>>;
+
 /// AES-CMAC-SIV in AEAD mode with 256-bit key size (128-bit security)
-pub type Aes128Siv = SivAlgorithm<Aes128, Aes128Ctr, Cmac<Aes128>, U32>;
+pub type Aes128SivAead = CmacSivAead<Aes128>;
 
 /// AES-CMAC-SIV in AEAD mode with 512-bit key size (256-bit security)
-pub type Aes256Siv = SivAlgorithm<Aes256, Aes256Ctr, Cmac<Aes256>, U64>;
+pub type Aes256SivAead = CmacSivAead<Aes256>;
 
 /// AES-PMAC-SIV in AEAD mode with 256-bit key size (128-bit security)
-pub type Aes128PmacSiv = SivAlgorithm<Aes128, Aes128Ctr, Pmac<Aes128>, U32>;
+pub type Aes128PmacSivAead = PmacSivAead<Aes128>;
 
 /// AES-PMAC-SIV in AEAD mode with 512-bit key size (256-bit security)
-pub type Aes256PmacSiv = SivAlgorithm<Aes256, Aes256Ctr, Pmac<Aes256>, U64>;
+pub type Aes256PmacSivAead = PmacSivAead<Aes256>;
 
-impl<B, C, M, K> Algorithm for SivAlgorithm<B, C, M, K>
+impl<C, M> Aead for SivAead<C, M>
 where
-    B: BlockCipher<BlockSize = U16>,
-    B::ParBlocks: ArrayLength<GenericArray<u8, U16>>,
-    C: Ctr<B>,
+    C: NewStreamCipher<NonceSize = U16> + SyncStreamCipher,
     M: Mac<OutputSize = U16>,
-    K: ArrayLength<u8>,
 {
-    type KeySize = K;
+    type KeySize = <C as NewStreamCipher>::KeySize;
     type TagSize = U16;
 
     fn new(key: &[u8]) -> Self {
-        Self {
-            block_cipher: PhantomData,
-            siv: Siv::new(key),
-            key_size: PhantomData,
-        }
+        Self { siv: Siv::new(key) }
     }
 
     fn seal_in_place(&mut self, nonce: &[u8], associated_data: &[u8], buffer: &mut [u8]) {
