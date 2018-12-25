@@ -4,7 +4,7 @@
 #[cfg(feature = "alloc")]
 use crate::prelude::*;
 use crate::{
-    aead::{self, Aes128PmacSiv, Aes128Siv, Aes256PmacSiv, Aes256Siv},
+    aead::{Aead, Aes128PmacSivAead, Aes128SivAead, Aes256PmacSivAead, Aes256SivAead},
     error::Error,
 };
 use byteorder::{BigEndian, ByteOrder};
@@ -19,28 +19,28 @@ const LAST_BLOCK_FLAG: u8 = 1;
 ///
 /// This corresponds to the ℰ stream encryptor object as defined in the paper
 /// Online Authenticated-Encryption and its Nonce-Reuse Misuse-Resistance
-pub struct Encryptor<A: aead::Algorithm> {
+pub struct Encryptor<A: Aead> {
     alg: A,
     nonce: NonceEncoder32,
 }
 
 /// AES-CMAC-SIV STREAM encryptor with 256-bit key size (128-bit security)
 /// and a 64-bit (8-byte) nonce.
-pub type Aes128SivEncryptor = Encryptor<Aes128Siv>;
+pub type Aes128SivEncryptor = Encryptor<Aes128SivAead>;
 
 /// AES-CMAC-SIV STREAM encryptor with 512-bit key size (256-bit security)
 /// and a 64-bit (8-byte) nonce.
-pub type Aes256SivEncryptor = Encryptor<Aes256Siv>;
+pub type Aes256SivEncryptor = Encryptor<Aes256SivAead>;
 
 /// AES-PMAC-SIV STREAM encryptor with 256-bit key size (128-bit security)
 /// and a 64-bit (8-byte) nonce.
-pub type Aes128PmacSivEncryptor = Encryptor<Aes128PmacSiv>;
+pub type Aes128PmacSivEncryptor = Encryptor<Aes128PmacSivAead>;
 
 /// AES-PMAC-SIV STREAM encryptor with 512-bit key size (256-bit security)
 /// and a 64-bit (8-byte) nonce.
-pub type Aes256PmacSivEncryptor = Encryptor<Aes256PmacSiv>;
+pub type Aes256PmacSivEncryptor = Encryptor<Aes256PmacSivAead>;
 
-impl<A: aead::Algorithm> Encryptor<A> {
+impl<A: Aead> Encryptor<A> {
     /// Create a new STREAM encryptor, initialized with a given key and nonce.
     ///
     /// Panics if the key or nonce is the wrong size.
@@ -83,28 +83,28 @@ impl<A: aead::Algorithm> Encryptor<A> {
 ///
 /// This corresponds to the 𝒟 stream decryptor object as defined in the paper
 /// Online Authenticated-Encryption and its Nonce-Reuse Misuse-Resistance
-pub struct Decryptor<A: aead::Algorithm> {
+pub struct Decryptor<A: Aead> {
     alg: A,
     nonce: NonceEncoder32,
 }
 
 /// AES-CMAC-SIV STREAM decryptor with 256-bit key size (128-bit security)
 /// and a 64-bit (8-byte) nonce.
-pub type Aes128SivDecryptor = Decryptor<Aes128Siv>;
+pub type Aes128SivDecryptor = Decryptor<Aes128SivAead>;
 
 /// AES-CMAC-SIV STREAM decryptor with 512-bit key size (256-bit security)
 /// and a 64-bit (8-byte) nonce.
-pub type Aes256SivDecryptor = Decryptor<Aes256Siv>;
+pub type Aes256SivDecryptor = Decryptor<Aes256SivAead>;
 
 /// AES-PMAC-SIV STREAM decryptor with 256-bit key size (128-bit security)
 /// and a 64-bit (8-byte) nonce.
-pub type Aes128PmacSivDecryptor = Decryptor<Aes128PmacSiv>;
+pub type Aes128PmacSivDecryptor = Decryptor<Aes128PmacSivAead>;
 
 /// AES-PMAC-SIV STREAM decryptor with 512-bit key size (256-bit security)
 /// and a 64-bit (8-byte) nonce.
-pub type Aes256PmacSivDecryptor = Decryptor<Aes256PmacSiv>;
+pub type Aes256PmacSivDecryptor = Decryptor<Aes256PmacSivAead>;
 
-impl<A: aead::Algorithm> Decryptor<A> {
+impl<A: Aead> Decryptor<A> {
     /// Create a new STREAM decryptor, initialized with a given key and nonce.
     ///
     /// Panics if the key or nonce is the wrong size.

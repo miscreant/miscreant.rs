@@ -1,14 +1,14 @@
-extern crate miscreant;
-
 mod stream_vectors;
 
-use crate::stream_vectors::{AesSivStreamExample, Block};
-use miscreant::aead;
-use miscreant::stream::{Aes128PmacSivDecryptor, Aes128PmacSivEncryptor};
-use miscreant::stream::{Aes128SivDecryptor, Aes128SivEncryptor};
-use miscreant::stream::{Aes256PmacSivDecryptor, Aes256PmacSivEncryptor};
-use miscreant::stream::{Aes256SivDecryptor, Aes256SivEncryptor};
-use miscreant::stream::{Decryptor, Encryptor};
+use self::stream_vectors::{AesSivStreamExample, Block};
+use miscreant::{
+    aead,
+    stream::{
+        Aes128PmacSivDecryptor, Aes128PmacSivEncryptor, Aes128SivDecryptor, Aes128SivEncryptor,
+        Aes256PmacSivDecryptor, Aes256PmacSivEncryptor, Aes256SivDecryptor, Aes256SivEncryptor,
+        Decryptor, Encryptor,
+    },
+};
 
 #[test]
 fn aes_siv_stream_examples_seal() {
@@ -29,7 +29,7 @@ fn aes_siv_stream_examples_seal() {
     }
 }
 
-fn test_encryptor<A: aead::Algorithm>(mut encryptor: Encryptor<A>, blocks: &[Block]) {
+fn test_encryptor<A: aead::Aead>(mut encryptor: Encryptor<A>, blocks: &[Block]) {
     for (i, block) in blocks.iter().enumerate() {
         if i < blocks.len() - 1 {
             let ciphertext = encryptor.seal_next(&block.ad, &block.plaintext);
@@ -61,7 +61,7 @@ fn aes_siv_stream_examples_open() {
     }
 }
 
-fn test_decryptor<A: aead::Algorithm>(mut decryptor: Decryptor<A>, blocks: &[Block]) {
+fn test_decryptor<A: aead::Aead>(mut decryptor: Decryptor<A>, blocks: &[Block]) {
     for (i, block) in blocks.iter().enumerate() {
         if i < blocks.len() - 1 {
             let plaintext = decryptor

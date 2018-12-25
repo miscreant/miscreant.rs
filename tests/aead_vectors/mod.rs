@@ -1,11 +1,6 @@
-extern crate data_encoding;
-extern crate serde_json;
-
-use self::data_encoding::HEXLOWER;
-pub use self::serde_json::Value as JsonValue;
-use std::fs::File;
-use std::io::Read;
-use std::path::Path;
+pub use serde_json::Value as JsonValue;
+use std::{fs::File, io::Read, path::Path};
+use subtle_encoding::hex;
 
 /// AES-SIV test vectors for AEAD API (CMAC and PMAC)
 // TODO: switch to the tjson crate (based on serde)
@@ -44,36 +39,31 @@ impl AesSivAeadExample {
             .into_iter()
             .map(|ex| Self {
                 alg: ex["alg:s"].as_str().expect("algorithm name").to_owned(),
-                key: HEXLOWER
-                    .decode(ex["key:d16"].as_str().expect("encoded example").as_bytes())
+                key: hex::decode(ex["key:d16"].as_str().expect("encoded example").as_bytes())
                     .expect("hex encoded"),
-                ad: HEXLOWER
-                    .decode(ex["ad:d16"].as_str().expect("encoded example").as_bytes())
+                ad: hex::decode(ex["ad:d16"].as_str().expect("encoded example").as_bytes())
                     .expect("hex encoded"),
-                nonce: HEXLOWER
-                    .decode(
-                        ex["nonce:d16"]
-                            .as_str()
-                            .expect("encoded example")
-                            .as_bytes(),
-                    )
-                    .expect("hex encoded"),
-                plaintext: HEXLOWER
-                    .decode(
-                        ex["plaintext:d16"]
-                            .as_str()
-                            .expect("encoded example")
-                            .as_bytes(),
-                    )
-                    .expect("hex encoded"),
-                ciphertext: HEXLOWER
-                    .decode(
-                        ex["ciphertext:d16"]
-                            .as_str()
-                            .expect("encoded example")
-                            .as_bytes(),
-                    )
-                    .expect("hex encoded"),
+                nonce: hex::decode(
+                    ex["nonce:d16"]
+                        .as_str()
+                        .expect("encoded example")
+                        .as_bytes(),
+                )
+                .expect("hex encoded"),
+                plaintext: hex::decode(
+                    ex["plaintext:d16"]
+                        .as_str()
+                        .expect("encoded example")
+                        .as_bytes(),
+                )
+                .expect("hex encoded"),
+                ciphertext: hex::decode(
+                    ex["ciphertext:d16"]
+                        .as_str()
+                        .expect("encoded example")
+                        .as_bytes(),
+                )
+                .expect("hex encoded"),
             })
             .collect()
     }

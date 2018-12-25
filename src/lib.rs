@@ -39,16 +39,23 @@ extern crate std;
 extern crate test;
 
 pub mod aead;
-mod ctr;
-pub mod error;
-pub mod ffi;
+mod error;
 mod prelude;
-mod s2v;
 pub mod siv;
+#[cfg(feature = "stream")]
 pub mod stream;
 
 #[cfg(feature = "bench")]
 mod bench;
+
+pub use crate::{
+    aead::{Aead, Aes128PmacSivAead, Aes128SivAead, Aes256PmacSivAead, Aes256SivAead},
+    error::Error,
+    siv::{s2v, Aes128PmacSiv, Aes128Siv, Aes256PmacSiv, Aes256Siv},
+};
+
+/// Size of the (synthetic) initialization vector in bytes
+pub const IV_SIZE: usize = 16;
 
 #[cfg(not(feature = "std"))]
 #[panic_handler]

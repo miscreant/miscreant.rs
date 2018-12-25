@@ -1,9 +1,7 @@
-extern crate miscreant;
-
 mod aead_vectors;
 
-use crate::aead_vectors::AesSivAeadExample;
-use miscreant::aead::{Aes128PmacSiv, Aes128Siv, Aes256PmacSiv, Aes256Siv, Algorithm};
+use self::aead_vectors::AesSivAeadExample;
+use miscreant::{Aead, Aes128PmacSivAead, Aes128SivAead, Aes256PmacSivAead, Aes256SivAead};
 
 #[test]
 fn aes_siv_aead_examples_seal() {
@@ -12,12 +10,12 @@ fn aes_siv_aead_examples_seal() {
     for example in examples {
         let ciphertext = match example.alg.as_ref() {
             "AES-SIV" => match example.key.len() {
-                32 => Aes128Siv::new(&example.key).seal(
+                32 => Aes128SivAead::new(&example.key).seal(
                     &example.nonce,
                     &example.ad,
                     &example.plaintext,
                 ),
-                64 => Aes256Siv::new(&example.key).seal(
+                64 => Aes256SivAead::new(&example.key).seal(
                     &example.nonce,
                     &example.ad,
                     &example.plaintext,
@@ -25,12 +23,12 @@ fn aes_siv_aead_examples_seal() {
                 _ => panic!("unexpected key size: {}", example.key.len()),
             },
             "AES-PMAC-SIV" => match example.key.len() {
-                32 => Aes128PmacSiv::new(&example.key).seal(
+                32 => Aes128PmacSivAead::new(&example.key).seal(
                     &example.nonce,
                     &example.ad,
                     &example.plaintext,
                 ),
-                64 => Aes256PmacSiv::new(&example.key).seal(
+                64 => Aes256PmacSivAead::new(&example.key).seal(
                     &example.nonce,
                     &example.ad,
                     &example.plaintext,
@@ -51,12 +49,12 @@ fn aes_siv_aead_examples_open() {
     for example in examples {
         let plaintext = match example.alg.as_ref() {
             "AES-SIV" => match example.key.len() {
-                32 => Aes128Siv::new(&example.key).open(
+                32 => Aes128SivAead::new(&example.key).open(
                     &example.nonce,
                     &example.ad,
                     &example.ciphertext,
                 ),
-                64 => Aes256Siv::new(&example.key).open(
+                64 => Aes256SivAead::new(&example.key).open(
                     &example.nonce,
                     &example.ad,
                     &example.ciphertext,
@@ -64,12 +62,12 @@ fn aes_siv_aead_examples_open() {
                 _ => panic!("unexpected key size: {}", example.key.len()),
             },
             "AES-PMAC-SIV" => match example.key.len() {
-                32 => Aes128PmacSiv::new(&example.key).open(
+                32 => Aes128PmacSivAead::new(&example.key).open(
                     &example.nonce,
                     &example.ad,
                     &example.ciphertext,
                 ),
-                64 => Aes256PmacSiv::new(&example.key).open(
+                64 => Aes256PmacSivAead::new(&example.key).open(
                     &example.nonce,
                     &example.ad,
                     &example.ciphertext,

@@ -19,28 +19,30 @@ edition     = "2018"
 crate-type = ["rlib", "staticlib"]
 
 [dependencies]
-aes = "0.3"
-crypto-mac = "0.7"
-block-modes = "0.2"
-byteorder = { version = "1.2", default-features = false }
-cmac = "0.2"
-dbl = "0.2"
-pmac = "0.2"
+aes = { version = "0.3", default-features = false }
+byteorder = { version = "1.2", default-features = false, optional = true }
+cmac = { version = "0.2", default-features = false }
+crypto-mac = { version = "0.7", default-features = false }
+ctr = { version = "0.3", default-features = false }
+dbl = { version = "0.2", default-features = false }
+generic-array = { version = "0.12", default-features = false }
+pmac = { version = "0.2", default-features = false }
 ring = { version = "0.13", optional = true }
+stream-cipher = { version = "0.3", default-features = false }
 subtle = { version = "2", default-features = false }
-zeroize = { version = "0.4", default-features = false, features = ["linux-backport", "windows"] }
+zeroize = { version = "0.5", default-features = false }
 
 [dev-dependencies]
-data-encoding = "2.0"
+subtle-encoding = "0.3"
 serde_json = "1"
 
 [features]
 alloc = []
 bench = ["ring"]
-default = ["std"]
+default = ["std", "stream"]
 nightly = ["zeroize/nightly"]
-staticlib = []
 std = ["alloc"]
+stream = ["byteorder"]
 
 [profile.dev]
 panic = "abort"
