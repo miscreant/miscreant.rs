@@ -1,0 +1,31 @@
+[package]
+name        = "benches"
+description = "Miscreant benchmarks"
+publish     = false
+version     = "0.0.0"
+authors     = ["Tony Arcieri <bascule@gmail.com>"]
+edition     = "2018"
+
+[dependencies]
+miscreant = { path = ".." }
+
+[dev-dependencies]
+criterion = "= 0.2.5"
+criterion-plot = "= 0.2.5"
+criterion-stats = "= 0.2.5"
+ring = "0.13"
+
+[[bench]]
+name = "aes_siv"
+path = "src/aes_siv.rs"
+harness = false
+
+[[bench]]
+name = "aes_pmac_siv"
+path = "src/aes_pmac_siv.rs"
+harness = false
+
+[[bench]]
+name = "aes_gcm"
+path = "src/aes_gcm.rs"
+harness = false

@@ -27,7 +27,6 @@ ctr = { version = "0.3", default-features = false }
 dbl = { version = "0.2", default-features = false }
 generic-array = { version = "0.12", default-features = false }
 pmac = { version = "0.2", default-features = false }
-ring = { version = "0.13", optional = true }
 stream-cipher = { version = "0.3", default-features = false }
 subtle = { version = "2", default-features = false }
 zeroize = { version = "0.5", default-features = false }
@@ -38,11 +37,13 @@ serde_json = "1"
 
 [features]
 alloc = []
-bench = ["ring"]
 default = ["std", "stream"]
 nightly = ["zeroize/nightly"]
 std = ["alloc"]
 stream = ["byteorder"]
+
+[workspace]
+members = [".", "benches"]
 
 [profile.dev]
 panic = "abort"
@@ -63,8 +64,5 @@ debug = false
 debug-assertions = false
 lto = false
 opt-level = 3
+overflow-checks = false
 rpath = false
-
-[package.metadata.docs.rs]
-features = ["std"]
-rustc-args = ["-Ctarget-feature=+aes"]

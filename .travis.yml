@@ -40,7 +40,7 @@ script:
   - cargo fmt --all -- --check
   - cargo clippy --all
   - cargo build --no-default-features --release
-  - cargo build --release
+  - cargo build --release --all --benches
   - cargo test
   - cargo test --release
   - cargo doc --no-deps
