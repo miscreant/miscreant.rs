@@ -25,18 +25,21 @@
 //! ```
 
 #![no_std]
-#![deny(warnings, missing_docs, trivial_casts, trivial_numeric_casts)]
-#![deny(unsafe_code, unused_import_braces, unused_qualifications)]
+#![deny(
+    warnings,
+    missing_docs,
+    trivial_casts,
+    trivial_numeric_casts,
+    unsafe_code,
+    unused_import_braces,
+    unused_qualifications
+)]
 #![cfg_attr(all(feature = "nightly", not(feature = "std")), feature(alloc))]
-#![cfg_attr(feature = "bench", feature(test))]
 #![doc(html_root_url = "https://docs.rs/miscreant/0.4.0-beta2")]
 
 #[cfg(feature = "std")]
 #[macro_use]
 extern crate std;
-
-#[cfg(all(feature = "bench", test))]
-extern crate test;
 
 pub mod aead;
 mod error;
@@ -44,9 +47,6 @@ mod prelude;
 pub mod siv;
 #[cfg(feature = "stream")]
 pub mod stream;
-
-#[cfg(feature = "bench")]
-mod bench;
 
 pub use crate::{
     aead::{Aead, Aes128PmacSivAead, Aes128SivAead, Aes256PmacSivAead, Aes256SivAead},
