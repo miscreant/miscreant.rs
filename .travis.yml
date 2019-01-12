@@ -15,7 +15,7 @@ os:
   - windows
 
 env:
-  - RUSTFLAGS=-Ctarget-feature=+aes
+  - RUSTFLAGS="-Ctarget-feature=+aes,+ssse3" RUSTDOCFLAGS="-Ctarget-feature=+aes,+ssse3"
 
 matrix:
   fast_finish: true
@@ -25,6 +25,9 @@ matrix:
     # improvements to Travis Windows support
     - os: windows
   include:
+    - name: "Rust: stable (C ABI)"
+      rust: stable
+      script: cd tests/ffi && make
     - name: "Rust: stable (wasm32)"
       rust: stable
       env: []
@@ -39,6 +42,8 @@ install:
 script:
   - cargo fmt --all -- --check
   - cargo clippy --all
+  - cargo check
+  - cargo audit
   - cargo build --no-default-features --features=soft-aes --release
   - cargo build --no-default-features --release
   - cargo build --release --all --benches
@@ -47,4 +52,3 @@ script:
   - cargo test --release
   - cargo test --features=soft-aes --release
   - cargo doc --no-deps
-  - cargo audit

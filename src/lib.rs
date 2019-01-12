@@ -15,13 +15,13 @@
 //! To access these features, you will need both a relatively recent
 //! Rust nightly and to pass the following as RUSTFLAGS:
 //!
-//! `RUSTFLAGS=-Ctarget-feature=+aes`
+//! `RUSTFLAGS=-Ctarget-feature=+aes,+ssse3`
 //!
 //! You can configure your `~/.cargo/config` to always pass these flags:
 //!
 //! ```toml
 //! [build]
-//! rustflags = ["-Ctarget-feature=+aes"]
+//! rustflags = ["-Ctarget-feature=+aes,+ssse3"]
 //! ```
 
 #![no_std]
@@ -37,12 +37,26 @@
 #![cfg_attr(all(feature = "nightly", not(feature = "std")), feature(alloc))]
 #![doc(html_root_url = "https://docs.rs/miscreant/0.4.0-beta2")]
 
+#[cfg(not(any(
+    feature = "soft-aes",
+    all(
+        target_feature = "aes",
+        target_feature = "sse2",
+        any(target_arch = "x86_64", target_arch = "x86")
+    )
+)))]
+compile_error!(
+    "unsupported target platform. Either enable appropriate target-features (+aes,+ssse3) \
+     in RUSTFLAGS or enable the 'soft-aes' cargo feature to fallback to a software AES implementation"
+);
+
 #[cfg(feature = "std")]
 #[macro_use]
 extern crate std;
 
 pub mod aead;
 mod error;
+pub mod ffi;
 mod prelude;
 pub mod siv;
 #[cfg(feature = "stream")]

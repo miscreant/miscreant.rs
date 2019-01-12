@@ -35,14 +35,14 @@ To enable hardware accelerated AES support on x86/x86_64 using [Intel AES-NI]
 instructions, you will need to pass the following `RUSTFLAGS`:
 
 ```
-RUSTFLAGS=-Ctarget-feature=+aes
+RUSTFLAGS=-Ctarget-feature=+aes,+ssse3
 ```
 
 You can configure your `~/.cargo/config` to always pass these flags:
 
 ```toml
 [build]
-rustflags = ["-Ctarget-feature=+aes"]
+rustflags = ["-Ctarget-feature=+aes,+ssse3"]
 ```
 
 ## Help and Discussion
