@@ -54,6 +54,12 @@ pub use crate::{
     siv::{s2v, Aes128PmacSiv, Aes128Siv, Aes256PmacSiv, Aes256Siv},
 };
 
+#[cfg(feature = "soft-aes")]
+pub(crate) use aes::{Aes128, Aes256};
+
+#[cfg(not(feature = "soft-aes"))]
+pub(crate) use aesni::{Aes128, Aes256};
+
 /// Size of the (synthetic) initialization vector in bytes
 pub const IV_SIZE: usize = 16;
 

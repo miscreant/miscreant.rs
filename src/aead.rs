@@ -2,10 +2,10 @@
 //! Symmetric encryption which ensures message confidentiality, integrity,
 //! and authenticity.
 
-use crate::{error::Error, siv::Siv};
+use crate::{error::Error, siv::Siv, Aes128, Aes256};
 #[cfg(feature = "alloc")]
 use crate::{prelude::*, IV_SIZE};
-use aes::{Aes128, Aes256};
+
 use cmac::Cmac;
 use crypto_mac::Mac;
 use ctr::Ctr128;
