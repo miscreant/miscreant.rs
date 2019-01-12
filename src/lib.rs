@@ -35,7 +35,7 @@
     unused_qualifications
 )]
 #![cfg_attr(all(feature = "nightly", not(feature = "std")), feature(alloc))]
-#![doc(html_root_url = "https://docs.rs/miscreant/0.4.0-beta2")]
+#![doc(html_root_url = "https://docs.rs/miscreant/0.4.0")]
 
 #[cfg(not(any(
     feature = "soft-aes",
