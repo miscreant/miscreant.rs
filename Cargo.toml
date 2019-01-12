@@ -5,7 +5,7 @@ description = """
               authenticated encryption (MRAE) including AES-SIV (RFC 5297),
               AES-PMAC-SIV, and the STREAM segmented encryption construction.
               """
-version     = "0.4.0-beta2" # Also update html_root_url in lib.rs when bumping this
+version     = "0.4.0" # Also update html_root_url in lib.rs when bumping this
 license     = "Apache-2.0 or MIT"
 authors     = ["Tony Arcieri <bascule@gmail.com>"]
 homepage    = "https://miscreant.io"
@@ -17,6 +17,9 @@ edition     = "2018"
 
 [lib]
 crate-type = ["rlib", "staticlib"]
+
+[badges]
+circle-ci = { repository = "miscreant/miscreant.rs" }
 
 [dependencies]
 aes = { version = "0.3", default-features = false, optional = true }

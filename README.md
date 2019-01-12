@@ -80,7 +80,7 @@ conditions.
 
 ## License
 
-Copyright (c) 2017-2018 [The Miscreant Developers][AUTHORS].
+Copyright (c) 2017-2019 [The Miscreant Developers][AUTHORS].
 
 **miscreant.rs** is licensed under either of:
 
