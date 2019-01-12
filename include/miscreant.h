@@ -16,7 +16,7 @@
 extern uint32_t crypto_aead_aes128siv_KEYBYTES;
 
 // AES-128-SIV authenticator tag size
-extern uint32_t crypto_aead_aes128siv_ABYTES;
+extern uint32_t crypto_aead_aes128siv_TAGBYTES;
 
 // AES-128-SIV authenticated encryption
 // Requires *ctlen_p == msglen + 16
@@ -46,7 +46,7 @@ int crypto_aead_aes128siv_decrypt(
 extern uint32_t crypto_aead_aes256siv_KEYBYTES;
 
 // AES-256-SIV authenticator tag size
-extern uint32_t crypto_aead_aes256siv_ABYTES;
+extern uint32_t crypto_aead_aes256siv_TAGBYTES;
 
 // AES-256-SIV authenticated encryption
 // Requires *ctlen_p == msglen + 16
@@ -76,7 +76,7 @@ int crypto_aead_aes256siv_decrypt(
 extern uint32_t crypto_aead_aes128pmacsiv_KEYBYTES;
 
 // AES-128-PMAC-SIV authenticator tag size
-extern uint32_t crypto_aead_aes128pmacsiv_ABYTES;
+extern uint32_t crypto_aead_aes128pmacsiv_TAGBYTES;
 
 // AES-128-SIV authenticated encryption
 // Requires *ctlen_p == msglen + 16
@@ -106,7 +106,7 @@ int crypto_aead_aes128pmacsiv_decrypt(
 extern uint32_t crypto_aead_aes256pmacsiv_KEYBYTES;
 
 // AES-256-PMAC-SIV authenticator tag size
-extern uint32_t crypto_aead_aes256pmacsiv_ABYTES;
+extern uint32_t crypto_aead_aes256pmacsiv_TAGBYTES;
 
 // AES-256-PMAC-SIV authenticated encryption
 // Requires *ctlen_p == msglen + 16
