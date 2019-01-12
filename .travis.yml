@@ -28,7 +28,7 @@ matrix:
     - name: "Rust: stable (wasm32)"
       rust: stable
       env: []
-      script: cargo build --target wasm32-unknown-unknown --no-default-features --release
+      script: cargo build --target wasm32-unknown-unknown --no-default-features --features=soft-aes --release
 
 install:
   - rustup component add rustfmt
@@ -39,9 +39,12 @@ install:
 script:
   - cargo fmt --all -- --check
   - cargo clippy --all
+  - cargo build --no-default-features --features=soft-aes --release
   - cargo build --no-default-features --release
   - cargo build --release --all --benches
   - cargo test
+  - cargo test --features=soft-aes
   - cargo test --release
+  - cargo test --features=soft-aes --release
   - cargo doc --no-deps
   - cargo audit

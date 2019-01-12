@@ -19,7 +19,7 @@ edition     = "2018"
 crate-type = ["rlib", "staticlib"]
 
 [dependencies]
-aes = { version = "0.3", default-features = false }
+aes = { version = "0.3", default-features = false, optional = true }
 byteorder = { version = "1.2", default-features = false, optional = true }
 cmac = { version = "0.2", default-features = false }
 crypto-mac = { version = "0.7", default-features = false }
@@ -31,6 +31,9 @@ stream-cipher = { version = "0.3", default-features = false }
 subtle = { version = "2", default-features = false }
 zeroize = { version = "0.5", default-features = false }
 
+[target.'cfg(all(target_feature="aes", target_feature = "sse2", any(target_arch = "x86_64", target_arch = "x86")))'.dependencies]
+aesni = { version = "0.6", default-features = false }
+
 [dev-dependencies]
 subtle-encoding = "0.3"
 serde_json = "1"
@@ -39,6 +42,8 @@ serde_json = "1"
 alloc = []
 default = ["std", "stream"]
 nightly = ["zeroize/nightly"]
+soft-aes = ["aes"]
+
 std = ["alloc"]
 stream = ["byteorder"]
 

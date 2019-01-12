@@ -3,8 +3,7 @@
 
 #[cfg(feature = "alloc")]
 use crate::prelude::*;
-use crate::{error::Error, IV_SIZE};
-use aes::{Aes128, Aes256};
+use crate::{error::Error, Aes128, Aes256, IV_SIZE};
 use cmac::Cmac;
 use crypto_mac::Mac;
 use ctr::Ctr128;
