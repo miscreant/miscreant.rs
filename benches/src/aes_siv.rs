@@ -27,15 +27,15 @@ fn aes_siv_128_encrypt_benchmark(msg_size: usize) -> Benchmark {
 }
 
 fn aes_siv_128_encrypt_128_bytes(c: &mut Criterion) {
-    c.bench("AES-128-PMAC-SIV", aes_siv_128_encrypt_benchmark(128));
+    c.bench("AES-128-CMAC-SIV", aes_siv_128_encrypt_benchmark(128));
 }
 
 fn aes_siv_128_encrypt_1024_bytes(c: &mut Criterion) {
-    c.bench("AES-128-PMAC-SIV", aes_siv_128_encrypt_benchmark(1024));
+    c.bench("AES-128-CMAC-SIV", aes_siv_128_encrypt_benchmark(1024));
 }
 
 fn aes_siv_128_encrypt_16384_bytes(c: &mut Criterion) {
-    c.bench("AES-128-PMAC-SIV", aes_siv_128_encrypt_benchmark(16384));
+    c.bench("AES-128-CMAC-SIV", aes_siv_128_encrypt_benchmark(16384));
 }
 
 criterion_group! {
