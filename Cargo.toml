@@ -76,4 +76,4 @@ overflow-checks = false
 rpath = false
 
 [package.metadata.docs.rs]
-rustc-args = ["-Ctarget-feature=+aes,+ssse3"]
+features = ["soft-aes"]
