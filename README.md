@@ -95,7 +95,7 @@ at your option.
 [docs-link]: https://docs.rs/miscreant/
 [build-image]: https://secure.travis-ci.org/miscreant/miscreant.rs.svg?branch=master
 [build-link]: https://travis-ci.org/miscreant/miscreant.rs
-[license-image]: https://img.shields.io/badge/license-MIT/Apache2.0-blue.svg
+[license-image]: https://img.shields.io/badge/license-Apache2.0/MIT-blue.svg
 [license-link]: https://github.com/miscreant/miscreant.rs/blob/master/LICENSE.txt
 [gitter-image]: https://badges.gitter.im/badge.svg
 [gitter-link]: https://gitter.im/miscreant/Lobby
