@@ -25,6 +25,7 @@
 //! ```
 
 #![no_std]
+#![cfg_attr(all(feature = "nightly", not(feature = "std")), feature(alloc))]
 #![deny(
     warnings,
     missing_docs,
@@ -34,8 +35,7 @@
     unused_import_braces,
     unused_qualifications
 )]
-#![cfg_attr(all(feature = "nightly", not(feature = "std")), feature(alloc))]
-#![doc(html_root_url = "https://docs.rs/miscreant/0.4.1")]
+#![doc(html_root_url = "https://docs.rs/miscreant/0.4.2")]
 
 #[cfg(not(any(
     feature = "soft-aes",
