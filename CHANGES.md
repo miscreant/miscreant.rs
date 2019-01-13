@@ -1,3 +1,7 @@
+## [0.4.1] (2019-01-12)
+
+- Cargo.toml: Fix docs.rs config, CI badge, and license string ([#13], [#14])
+
 ## [0.4.0] (2019-01-12)
 
 - Add back (off-by-default) `soft-aes` feature ([#10])
@@ -20,6 +24,9 @@
 
 - Initial release
 
+[0.4.1]: https://github.com/miscreant/miscreant.rs/pull/15
+[#14]: https://github.com/miscreant/miscreant.rs/pull/14
+[#13]: https://github.com/miscreant/miscreant.rs/pull/13
 [0.4.0]: https://github.com/miscreant/miscreant.rs/pull/12
 [#10]: https://github.com/miscreant/miscreant.rs/pull/12
 [#7]: https://github.com/miscreant/miscreant.rs/pull/7

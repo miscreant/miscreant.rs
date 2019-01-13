@@ -1,4 +1,4 @@
-# miscreant.rs
+# <img alt="miscreant." src="https://miscreant.io/images/miscreant.svg">
 
 [![crate][crate-image]][crate-link]
 [![Docs][docs-image]][docs-link]
