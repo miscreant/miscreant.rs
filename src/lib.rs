@@ -1,19 +1,22 @@
 //! `Miscreant`: Misuse resistant symmetric encryption library providing the
 //! AES-SIV (RFC 5297), AES-PMAC-SIV, and STREAM constructions
 //!
-//! # Build Notes
+//! ## Build Notes
 //!
-//! miscreant.rs works on stable rust since `1.27`. By default it is built with aesni
-//! support which requires an x86 instruction set. You can disable this with
-//! the `aes-soft` feature flag which enables usage on other architectures.
+//! miscreant.rs supports Rust 1.31 and later.
 //!
-//! The default configuration uses the `core::arch` API for stable access to
-//! CPU intrinsics, namely the [Intel AES-NI]  instructions which provide a
-//! hardware implementation of AES.
+//! By default the crate will only build on targets which support hardware AES
+//! acceleration, which is presently limited to `x86`/`x86_64` with [AES-NI]
+//! acceleration. On these platforms, you'll need to enable the required target
+//! features.
 //!
+//! Otherwise, you'll need to enable the `soft-aes` cargo feature to support
+//! a software fallback implementation of AES.
 //!
-//! To access these features, you will need both a relatively recent
-//! Rust nightly and to pass the following as RUSTFLAGS:
+//! ### `x86`/`x86_64` targets with AES-NI support
+//!
+//! To build this crate with hardware acceleration support, set the following
+//! `RUSTFLAGS` environment variable:
 //!
 //! `RUSTFLAGS=-Ctarget-feature=+aes,+ssse3`
 //!
@@ -23,6 +26,11 @@
 //! [build]
 //! rustflags = ["-Ctarget-feature=+aes,+ssse3"]
 //! ```
+//!
+//! ### All other targets: software AES fallback
+//!
+//! To enable building with a software fallback implementation of AES rather
+//! than the hardware accelerated version, enable the `soft-aes` cargo feature.
 
 #![no_std]
 #![cfg_attr(all(feature = "nightly", not(feature = "std")), feature(alloc))]
