@@ -66,6 +66,8 @@ pub mod aead;
 mod error;
 pub mod ffi;
 mod prelude;
+// TODO: don't make this public in a release. It's just there to keep warnings away
+pub mod polyval;
 pub mod siv;
 #[cfg(feature = "stream")]
 pub mod stream;
