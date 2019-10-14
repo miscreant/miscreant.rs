@@ -32,7 +32,7 @@ generic-array = { version = "0.12", default-features = false }
 pmac = { version = "0.2", default-features = false }
 stream-cipher = { version = "0.3", default-features = false }
 subtle = { version = "2", default-features = false }
-zeroize = { version = "0.5", default-features = false }
+zeroize = { version = "1.0", default-features = false }
 
 [target.'cfg(all(target_feature="aes", target_feature = "sse2", any(target_arch = "x86_64", target_arch = "x86")))'.dependencies]
 aesni = { version = "0.6", default-features = false }
