@@ -10,7 +10,7 @@ edition     = "2018"
 miscreant = { path = ".." }
 
 [dev-dependencies]
-criterion = "= 0.2.5"
+criterion = "= 0.3.0"
 criterion-plot = "= 0.2.5"
 criterion-stats = "= 0.2.5"
 ring = "0.13"
