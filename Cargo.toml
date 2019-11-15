@@ -22,7 +22,7 @@ crate-type = ["rlib", "staticlib"]
 travis-ci = { repository = "miscreant/miscreant.rs" }
 
 [dependencies]
-aes = { version = "0.3", default-features = false, optional = true }
+aes = { version = "0.3", default-features = false }
 byteorder = { version = "1.2", default-features = false, optional = true }
 cmac = { version = "0.2", default-features = false }
 crypto-mac = { version = "0.7", default-features = false }
@@ -32,10 +32,7 @@ generic-array = { version = "0.12", default-features = false }
 pmac = { version = "0.2", default-features = false }
 stream-cipher = { version = "0.3", default-features = false }
 subtle = { version = "2", default-features = false }
-zeroize = { version = "1.0", default-features = false }
-
-[target.'cfg(all(target_feature="aes", target_feature = "sse2", any(target_arch = "x86_64", target_arch = "x86")))'.dependencies]
-aesni = { version = "0.6", default-features = false }
+zeroize = { version = "1", default-features = false }
 
 [dev-dependencies]
 subtle-encoding = "0.5"
@@ -44,8 +41,6 @@ serde_json = "1"
 [features]
 alloc = []
 default = ["std", "stream"]
-soft-aes = ["aes"]
-
 std = ["alloc"]
 stream = ["byteorder"]
 
@@ -73,6 +68,3 @@ lto = false
 opt-level = 3
 overflow-checks = false
 rpath = false
-
-[package.metadata.docs.rs]
-features = ["soft-aes"]
