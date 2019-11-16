@@ -3,6 +3,7 @@
 [![crate][crate-image]][crate-link]
 [![Docs][docs-image]][docs-link]
 [![Build Status][build-image]][build-link]
+![MSRV][msrv-image]
 [![MIT licensed][license-image]][license-link]
 [![Gitter Chat][gitter-image]][gitter-link]
 
@@ -93,8 +94,9 @@ at your option.
 [crate-link]: https://crates.io/crates/miscreant
 [docs-image]: https://docs.rs/miscreant/badge.svg
 [docs-link]: https://docs.rs/miscreant/
-[build-image]: https://secure.travis-ci.org/miscreant/miscreant.rs.svg?branch=master
-[build-link]: https://travis-ci.org/miscreant/miscreant.rs
+[build-image]: https://github.com/miscreant/miscreant.rs/workflows/Rust/badge.svg
+[build-link]: https://github.com/miscreant/miscreant.rs/actions
+[msrv-image]: https://img.shields.io/badge/rustc-1.36+-blue.svg
 [license-image]: https://img.shields.io/badge/license-Apache2.0/MIT-blue.svg
 [license-link]: https://github.com/miscreant/miscreant.rs/blob/master/LICENSE.txt
 [gitter-image]: https://badges.gitter.im/badge.svg
