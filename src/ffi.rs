@@ -4,7 +4,7 @@
 
 // This is the only code in Miscreant allowed to be unsafe
 #![allow(unsafe_code, non_upper_case_globals, unknown_lints)]
-#![allow(clippy::too_many_arguments)]
+#![allow(clippy::missing_safety_doc, clippy::too_many_arguments)]
 
 use crate::{Aead, Aes128PmacSivAead, Aes128SivAead, Aes256PmacSivAead, Aes256SivAead};
 use core::{ptr, slice};

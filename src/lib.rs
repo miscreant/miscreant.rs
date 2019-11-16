@@ -3,7 +3,7 @@
 //!
 //! ## Minimum Supported Rust Version (MSRV)
 //!
-//! - Rust 1.31.0
+//! - Rust 1.36.0
 //!
 //! ### `x86`/`x86_64` targets with AES-NI support
 //!
@@ -23,17 +23,17 @@
 //! [AES-NI]: https://en.wikipedia.org/wiki/AES_instruction_set#x86_architecture_processors
 
 #![no_std]
-#![cfg_attr(all(feature = "nightly", not(feature = "std")), feature(alloc))]
-#![deny(
-    warnings,
+#![doc(html_root_url = "https://docs.rs/miscreant/0.4.2")]
+#![warn(
     missing_docs,
     trivial_casts,
     trivial_numeric_casts,
     unsafe_code,
-    unused_import_braces,
     unused_qualifications
 )]
-#![doc(html_root_url = "https://docs.rs/miscreant/0.4.2")]
+
+#[cfg(feature = "alloc")]
+extern crate alloc;
 
 #[cfg(feature = "std")]
 #[macro_use]
@@ -42,7 +42,6 @@ extern crate std;
 pub mod aead;
 mod error;
 pub mod ffi;
-mod prelude;
 pub mod siv;
 #[cfg(feature = "stream")]
 pub mod stream;
@@ -58,7 +57,7 @@ pub(crate) use aes::{Aes128, Aes256};
 /// Size of the (synthetic) initialization vector in bytes
 pub const IV_SIZE: usize = 16;
 
-#[cfg(not(feature = "std"))]
+#[cfg(not(any(feature = "std", test)))]
 #[panic_handler]
 fn panic(_info: &core::panic::PanicInfo) -> ! {
     loop {}

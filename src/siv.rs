@@ -1,9 +1,9 @@
 //! The Synthetic Initialization Vector (SIV) misuse-resistant block cipher
 //! mode of operation.
 
-#[cfg(feature = "alloc")]
-use crate::prelude::*;
 use crate::{error::Error, Aes128, Aes256, IV_SIZE};
+#[cfg(feature = "alloc")]
+use alloc::vec::Vec;
 use cmac::Cmac;
 use crypto_mac::Mac;
 use ctr::Ctr128;
