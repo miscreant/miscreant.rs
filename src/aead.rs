@@ -4,7 +4,7 @@
 
 use crate::{error::Error, siv::Siv, Aes128, Aes256};
 #[cfg(feature = "alloc")]
-use crate::{prelude::*, IV_SIZE};
+use {crate::IV_SIZE, alloc::vec::Vec};
 
 use cmac::Cmac;
 use crypto_mac::Mac;

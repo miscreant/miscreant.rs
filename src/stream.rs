@@ -1,12 +1,12 @@
 //! `stream.rs`: The STREAM online authenticated encryption construction.
 //! See <https://eprint.iacr.org/2015/189.pdf> for definition.
 
-#[cfg(feature = "alloc")]
-use crate::prelude::*;
 use crate::{
     aead::{Aead, Aes128PmacSivAead, Aes128SivAead, Aes256PmacSivAead, Aes256SivAead},
     error::Error,
 };
+#[cfg(feature = "alloc")]
+use alloc::vec::Vec;
 use byteorder::{BigEndian, ByteOrder};
 
 /// Size of a nonce required by STREAM in bytes

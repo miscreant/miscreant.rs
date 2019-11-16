@@ -29,7 +29,7 @@ AES modes where it can facilitate [chosen ciphertext attacks].
 
 ## Requirements
 
-**miscreant.rs** requires Rust 1.31+.
+**miscreant.rs** requires Rust 1.36+.
 
 To enable hardware accelerated AES support on x86/x86_64 using [Intel AES-NI]
 instructions, you will need to pass the following `RUSTFLAGS`:
