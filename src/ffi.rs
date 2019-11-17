@@ -6,9 +6,9 @@
 #![allow(unsafe_code, non_upper_case_globals, unknown_lints)]
 #![allow(clippy::missing_safety_doc, clippy::too_many_arguments)]
 
+use crate::generic_array::typenum::marker_traits::Unsigned;
 use crate::{Aead, Aes128PmacSivAead, Aes128SivAead, Aes256PmacSivAead, Aes256SivAead};
 use core::{ptr, slice};
-use generic_array::typenum::marker_traits::Unsigned;
 
 //
 // AES-128-SIV AEAD
@@ -216,7 +216,7 @@ unsafe fn aead_encrypt<A: Aead>(
     let nonce_slice = slice::from_raw_parts(nonce, noncelen as usize);
     let ad_slice = slice::from_raw_parts(ad, adlen as usize);
 
-    A::new(key_slice).seal_in_place(nonce_slice, ad_slice, ct_slice);
+    A::new(key_slice).encrypt_in_place(nonce_slice, ad_slice, ct_slice);
 
     0
 }
@@ -253,7 +253,7 @@ unsafe fn aead_decrypt<A: Aead>(
     let nonce_slice = slice::from_raw_parts(nonce, noncelen as usize);
 
     if A::new(key_slice)
-        .open_in_place(nonce_slice, ad_slice, msg_slice)
+        .decrypt_in_place(nonce_slice, ad_slice, msg_slice)
         .is_err()
     {
         return -1;

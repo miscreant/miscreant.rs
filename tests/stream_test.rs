@@ -2,16 +2,16 @@ mod stream_vectors;
 
 use self::stream_vectors::{AesSivStreamExample, Block};
 use miscreant::{
-    aead,
     stream::{
         Aes128PmacSivDecryptor, Aes128PmacSivEncryptor, Aes128SivDecryptor, Aes128SivEncryptor,
         Aes256PmacSivDecryptor, Aes256PmacSivEncryptor, Aes256SivDecryptor, Aes256SivEncryptor,
         Decryptor, Encryptor,
     },
+    Aead,
 };
 
 #[test]
-fn aes_siv_stream_examples_seal() {
+fn aes_siv_stream_examples_encrypt() {
     for ex in AesSivStreamExample::load_all() {
         match ex.alg.as_ref() {
             "AES-SIV" => match ex.key.len() {
@@ -29,13 +29,13 @@ fn aes_siv_stream_examples_seal() {
     }
 }
 
-fn test_encryptor<A: aead::Aead>(mut encryptor: Encryptor<A>, blocks: &[Block]) {
+fn test_encryptor<A: Aead>(mut encryptor: Encryptor<A>, blocks: &[Block]) {
     for (i, block) in blocks.iter().enumerate() {
         if i < blocks.len() - 1 {
-            let ciphertext = encryptor.seal_next(&block.ad, &block.plaintext);
+            let ciphertext = encryptor.encrypt_next(&block.ad, &block.plaintext);
             assert_eq!(ciphertext, block.ciphertext);
         } else {
-            let ciphertext = encryptor.seal_last(&block.ad, &block.plaintext);
+            let ciphertext = encryptor.encrypt_last(&block.ad, &block.plaintext);
             assert_eq!(ciphertext, block.ciphertext);
             return;
         }
@@ -43,7 +43,7 @@ fn test_encryptor<A: aead::Aead>(mut encryptor: Encryptor<A>, blocks: &[Block]) 
 }
 
 #[test]
-fn aes_siv_stream_examples_open() {
+fn aes_siv_stream_examples_decrypt() {
     for ex in AesSivStreamExample::load_all() {
         match ex.alg.as_ref() {
             "AES-SIV" => match ex.key.len() {
@@ -61,17 +61,17 @@ fn aes_siv_stream_examples_open() {
     }
 }
 
-fn test_decryptor<A: aead::Aead>(mut decryptor: Decryptor<A>, blocks: &[Block]) {
+fn test_decryptor<A: Aead>(mut decryptor: Decryptor<A>, blocks: &[Block]) {
     for (i, block) in blocks.iter().enumerate() {
         if i < blocks.len() - 1 {
             let plaintext = decryptor
-                .open_next(&block.ad, &block.ciphertext)
+                .decrypt_next(&block.ad, &block.ciphertext)
                 .expect("decrypt failure");
 
             assert_eq!(plaintext, block.plaintext);
         } else {
             let plaintext = decryptor
-                .open_last(&block.ad, &block.ciphertext)
+                .decrypt_last(&block.ad, &block.ciphertext)
                 .expect("decrypt failure");
 
             assert_eq!(plaintext, block.plaintext);
