@@ -1,13 +1,7 @@
 //! `stream.rs`: The STREAM online authenticated encryption construction.
 //! See <https://eprint.iacr.org/2015/189.pdf> for definition.
 
-use crate::{
-    aead::{Aead, Aes128PmacSivAead, Aes128SivAead, Aes256PmacSivAead, Aes256SivAead},
-    error::Error,
-};
-#[cfg(feature = "alloc")]
-use alloc::vec::Vec;
-use byteorder::{BigEndian, ByteOrder};
+use crate::{Aead, Aes128PmacSivAead, Aes128SivAead, Aes256PmacSivAead, Aes256SivAead, Error};
 
 /// Size of a nonce required by STREAM in bytes
 pub const NONCE_SIZE: usize = 8;
@@ -52,30 +46,28 @@ impl<A: Aead> Encryptor<A> {
     }
 
     /// Encrypt the next message in the stream in-place
-    pub fn seal_next_in_place(&mut self, ad: &[u8], buffer: &mut [u8]) {
-        self.alg.seal_in_place(self.nonce.as_slice(), ad, buffer);
+    pub fn encrypt_next_in_place(&mut self, ad: &[u8], buffer: &mut [u8]) {
+        self.alg.encrypt_in_place(self.nonce.as_slice(), ad, buffer);
         self.nonce.increment();
     }
 
     /// Encrypt the final message in-place, consuming the stream encryptor
-    pub fn seal_last_in_place(mut self, ad: &[u8], buffer: &mut [u8]) {
-        self.alg.seal_in_place(&self.nonce.finish(), ad, buffer);
+    pub fn encrypt_last_in_place(mut self, ad: &[u8], buffer: &mut [u8]) {
+        self.alg.encrypt_in_place(&self.nonce.finish(), ad, buffer);
     }
 
     /// Encrypt the next message in the stream, allocating and returning a
     /// `Vec<u8>` for the ciphertext
-    #[cfg(feature = "alloc")]
-    pub fn seal_next(&mut self, ad: &[u8], plaintext: &[u8]) -> Vec<u8> {
-        let ciphertext = self.alg.seal(self.nonce.as_slice(), ad, plaintext);
+    pub fn encrypt_next(&mut self, ad: &[u8], plaintext: &[u8]) -> Vec<u8> {
+        let ciphertext = self.alg.encrypt(self.nonce.as_slice(), ad, plaintext);
         self.nonce.increment();
         ciphertext
     }
 
     /// Encrypt the final message in the stream, allocating and returning a
     /// `Vec<u8>` for the ciphertext
-    #[cfg(feature = "alloc")]
-    pub fn seal_last(mut self, ad: &[u8], plaintext: &[u8]) -> Vec<u8> {
-        self.alg.seal(&self.nonce.finish(), ad, plaintext)
+    pub fn encrypt_last(mut self, ad: &[u8], plaintext: &[u8]) -> Vec<u8> {
+        self.alg.encrypt(&self.nonce.finish(), ad, plaintext)
     }
 }
 
@@ -116,39 +108,39 @@ impl<A: Aead> Decryptor<A> {
     }
 
     /// Decrypt the next message in the stream in-place
-    pub fn open_next_in_place<'a>(
+    pub fn decrypt_next_in_place<'a>(
         &mut self,
         ad: &[u8],
         buffer: &'a mut [u8],
     ) -> Result<&'a [u8], Error> {
-        let result = self.alg.open_in_place(self.nonce.as_slice(), ad, buffer)?;
+        let result = self
+            .alg
+            .decrypt_in_place(self.nonce.as_slice(), ad, buffer)?;
         self.nonce.increment();
         Ok(result)
     }
 
     /// Decrypt the final message in-place, consuming the stream decryptor
-    pub fn open_last_in_place<'a>(
+    pub fn decrypt_last_in_place<'a>(
         mut self,
         ad: &[u8],
         buffer: &'a mut [u8],
     ) -> Result<&'a [u8], Error> {
-        self.alg.open_in_place(&self.nonce.finish(), ad, buffer)
+        self.alg.decrypt_in_place(&self.nonce.finish(), ad, buffer)
     }
 
     /// Decrypt the next message in the stream, allocating and returning a
     /// `Vec<u8>` for the plaintext
-    #[cfg(feature = "alloc")]
-    pub fn open_next(&mut self, ad: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, Error> {
-        let plaintext = self.alg.open(self.nonce.as_slice(), ad, ciphertext)?;
+    pub fn decrypt_next(&mut self, ad: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, Error> {
+        let plaintext = self.alg.decrypt(self.nonce.as_slice(), ad, ciphertext)?;
         self.nonce.increment();
         Ok(plaintext)
     }
 
     /// Decrypt the next message in the stream, allocating and returning a
     /// `Vec<u8>` for the plaintext
-    #[cfg(feature = "alloc")]
-    pub fn open_last(mut self, ad: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, Error> {
-        self.alg.open(&self.nonce.finish(), ad, ciphertext)
+    pub fn decrypt_last(mut self, ad: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, Error> {
+        self.alg.decrypt(&self.nonce.finish(), ad, ciphertext)
     }
 }
 
@@ -192,7 +184,7 @@ impl NonceEncoder32 {
             .checked_add(1)
             .expect("STREAM nonce counter overflowed");
 
-        BigEndian::write_u32(&mut self.value[NONCE_SIZE..(NONCE_SIZE + 4)], self.counter);
+        self.value[NONCE_SIZE..(NONCE_SIZE + 4)].copy_from_slice(&self.counter.to_be_bytes());
     }
 
     /// Borrow the current value as a slice

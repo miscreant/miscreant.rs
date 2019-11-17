@@ -8,26 +8,27 @@ on:
 name: Rust
 
 jobs:
-  build:
-    name: Build
-    strategy:
-      matrix:
-        target:
-          - thumbv7em-none-eabihf
-          - wasm32-unknown-unknown
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-      - name: Install target
-        run: rustup target add ${{ matrix.target }}
-      - uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --no-default-features --lib --target ${{ matrix.target }}
+  # TODO: fix no_std support (see #36)
+  #  build:
+  #    name: Build
+  #    strategy:
+  #      matrix:
+  #        target:
+  #          - thumbv7em-none-eabihf
+  #          - wasm32-unknown-unknown
+  #    runs-on: ubuntu-latest
+  #    steps:
+  #      - uses: actions/checkout@v1
+  #      - uses: actions-rs/toolchain@v1
+  #        with:
+  #          toolchain: stable
+  #          override: true
+  #      - name: Install target
+  #        run: rustup target add ${{ matrix.target }}
+  #      - uses: actions-rs/cargo@v1
+  #        with:
+  #          command: build
+  #          args: --no-default-features --lib --target ${{ matrix.target }}
 
   check:
     name: Check

@@ -2,15 +2,16 @@
 //! Symmetric encryption which ensures message confidentiality, integrity,
 //! and authenticity.
 
-use crate::{error::Error, siv::Siv, Aes128, Aes256};
-#[cfg(feature = "alloc")]
-use {crate::IV_SIZE, alloc::vec::Vec};
-
+use crate::{
+    generic_array::{typenum::U16, ArrayLength},
+    Error,
+};
+use aes::{Aes128, Aes256};
+use aes_siv::siv::{Siv, IV_SIZE};
 use cmac::Cmac;
 use crypto_mac::Mac;
 use ctr::Ctr128;
-use generic_array::{typenum::U16, ArrayLength};
-use pmac::Pmac;
+use pmac_crate::Pmac;
 use stream_cipher::{NewStreamCipher, SyncStreamCipher};
 
 /// An Authenticated Encryption with Associated Data (AEAD) algorithm.
@@ -54,7 +55,7 @@ pub trait Aead {
     /// Panics if `plaintext.len()` is less than `M::OutputSize`.
     /// Panics if `nonce.len()` is greater than `MAX_ASSOCIATED_DATA`.
     /// Panics if `associated_data.len()` is greater than `MAX_ASSOCIATED_DATA`.
-    fn seal_in_place(&mut self, nonce: &[u8], associated_data: &[u8], buffer: &mut [u8]);
+    fn encrypt_in_place(&mut self, nonce: &[u8], associated_data: &[u8], buffer: &mut [u8]);
 
     /// Decrypt the given ciphertext in-place, authenticating it against the
     /// synthetic IV included in the message.
@@ -62,7 +63,7 @@ pub trait Aead {
     /// To decrypt data, it is recommended to use this API instead of the lower-level `Siv` API.
     ///
     /// Returns a slice containing a decrypted message on success.
-    fn open_in_place<'a>(
+    fn decrypt_in_place<'a>(
         &mut self,
         nonce: &[u8],
         associated_data: &[u8],
@@ -70,24 +71,22 @@ pub trait Aead {
     ) -> Result<&'a [u8], Error>;
 
     /// Encrypt the given plaintext, allocating and returning a Vec<u8> for the ciphertext
-    #[cfg(feature = "alloc")]
-    fn seal(&mut self, nonce: &[u8], associated_data: &[u8], plaintext: &[u8]) -> Vec<u8> {
+    fn encrypt(&mut self, nonce: &[u8], associated_data: &[u8], plaintext: &[u8]) -> Vec<u8> {
         let mut buffer = vec![0; IV_SIZE + plaintext.len()];
         buffer[IV_SIZE..].copy_from_slice(plaintext);
-        self.seal_in_place(nonce, associated_data, &mut buffer);
+        self.encrypt_in_place(nonce, associated_data, &mut buffer);
         buffer
     }
 
     /// Decrypt the given ciphertext, allocating and returning a Vec<u8> for the plaintext
-    #[cfg(feature = "alloc")]
-    fn open(
+    fn decrypt(
         &mut self,
         nonce: &[u8],
         associated_data: &[u8],
         ciphertext: &[u8],
     ) -> Result<Vec<u8>, Error> {
         let mut buffer = Vec::from(ciphertext);
-        self.open_in_place(nonce, associated_data, &mut buffer)?;
+        self.decrypt_in_place(nonce, associated_data, &mut buffer)?;
         buffer.drain(..IV_SIZE);
         Ok(buffer)
     }
@@ -134,16 +133,16 @@ where
         Self { siv: Siv::new(key) }
     }
 
-    fn seal_in_place(&mut self, nonce: &[u8], associated_data: &[u8], buffer: &mut [u8]) {
-        self.siv.seal_in_place(&[associated_data, nonce], buffer)
+    fn encrypt_in_place(&mut self, nonce: &[u8], associated_data: &[u8], buffer: &mut [u8]) {
+        self.siv.encrypt_in_place(&[associated_data, nonce], buffer)
     }
 
-    fn open_in_place<'a>(
+    fn decrypt_in_place<'a>(
         &mut self,
         nonce: &[u8],
         associated_data: &[u8],
         buffer: &'a mut [u8],
     ) -> Result<&'a [u8], Error> {
-        self.siv.open_in_place(&[associated_data, nonce], buffer)
+        self.siv.decrypt_in_place(&[associated_data, nonce], buffer)
     }
 }
