@@ -38,10 +38,10 @@ pub mod ffi;
 #[cfg(feature = "stream")]
 pub mod stream;
 
-pub use crate::aead::{Aead, Aes128SivAead, Aes256SivAead};
+pub use crate::aead::{Aead, Aes128SivAead, Aes256SivAead, SivAead};
 pub use aes_siv::{
     aead::{generic_array, Error},
-    siv::{Aes128Siv, Aes256Siv},
+    siv::{self, Aes128Siv, Aes256Siv},
 };
 
 #[cfg(feature = "pmac")]
