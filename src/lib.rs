@@ -3,7 +3,7 @@
 //!
 //! ## Minimum Supported Rust Version (MSRV)
 //!
-//! - Rust 1.36.0
+//! - Rust **1.36.0**
 //!
 //! ### `x86`/`x86_64` targets with AES-NI support
 //!
@@ -23,7 +23,7 @@
 //! [AES-NI]: https://en.wikipedia.org/wiki/AES_instruction_set#x86_architecture_processors
 
 #![no_std]
-#![doc(html_root_url = "https://docs.rs/miscreant/0.4.2")]
+#![doc(html_root_url = "https://docs.rs/miscreant/0.5.0")]
 #![warn(
     missing_docs,
     trivial_casts,
