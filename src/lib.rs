@@ -23,7 +23,7 @@
 //! [AES-NI]: https://en.wikipedia.org/wiki/AES_instruction_set#x86_architecture_processors
 
 #![no_std]
-#![doc(html_root_url = "https://docs.rs/miscreant/0.5.0")]
+#![doc(html_root_url = "https://docs.rs/miscreant/0.5.1")]
 #![warn(missing_docs, rust_2018_idioms, unsafe_code, unused_qualifications)]
 
 #[cfg(feature = "alloc")]

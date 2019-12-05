@@ -1,7 +1,13 @@
+## [0.5.1] (2019-12-04)
+
+- Remove crate type overrides ([#41])
+
 ## [0.5.0] (2019-12-04)
 
 - Use `aes-siv` crate ([#36], [#39])
 - Remove `soft-aes` feature ([#33])
+
+**YANKED**: release's docs wouldn't build. Changed crate lib config.
 
 ## [0.4.2] (2019-01-12)
 
@@ -33,6 +39,8 @@
 
 - Initial release
 
+[0.5.1]: https://github.com/miscreant/miscreant.rs/pull/42
+[#41]: https://github.com/miscreant/miscreant.rs/pull/41
 [0.5.0]: https://github.com/miscreant/miscreant.rs/pull/40
 [#39]: https://github.com/miscreant/miscreant.rs/pull/39
 [#36]: https://github.com/miscreant/miscreant.rs/pull/36
