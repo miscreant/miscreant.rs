@@ -1,3 +1,7 @@
+## [0.5.2] (2019-12-04)
+
+- Re-export `SivAead` and `siv` module ([#43])
+
 ## [0.5.1] (2019-12-04)
 
 - Remove crate type overrides ([#41])
@@ -39,6 +43,8 @@
 
 - Initial release
 
+[0.5.2]: https://github.com/miscreant/miscreant.rs/pull/44
+[#43]: https://github.com/miscreant/miscreant.rs/pull/43
 [0.5.1]: https://github.com/miscreant/miscreant.rs/pull/42
 [#41]: https://github.com/miscreant/miscreant.rs/pull/41
 [0.5.0]: https://github.com/miscreant/miscreant.rs/pull/40
