@@ -24,13 +24,7 @@
 
 #![no_std]
 #![doc(html_root_url = "https://docs.rs/miscreant/0.5.0")]
-#![warn(
-    missing_docs,
-    trivial_casts,
-    trivial_numeric_casts,
-    unsafe_code,
-    unused_qualifications
-)]
+#![warn(missing_docs, rust_2018_idioms, unsafe_code, unused_qualifications)]
 
 #[cfg(feature = "alloc")]
 #[macro_use]
@@ -54,9 +48,3 @@ pub use aes_siv::{
 pub use crate::aead::{Aes128PmacSivAead, Aes256PmacSivAead};
 #[cfg(feature = "pmac")]
 pub use aes_siv::siv::{Aes128PmacSiv, Aes256PmacSiv};
-
-#[cfg(not(any(feature = "std", test)))]
-#[panic_handler]
-fn panic(_info: &core::panic::PanicInfo) -> ! {
-    loop {}
-}
