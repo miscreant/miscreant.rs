@@ -1,3 +1,8 @@
+## [0.5.0] (2019-12-04)
+
+- Use `aes-siv` crate ([#36], [#39])
+- Remove `soft-aes` feature ([#33])
+
 ## [0.4.2] (2019-01-12)
 
 - Cargo.toml: Enable `soft-aes` feature in docs.rs metadata ([#16])
@@ -28,6 +33,10 @@
 
 - Initial release
 
+[0.5.0]: https://github.com/miscreant/miscreant.rs/pull/40
+[#39]: https://github.com/miscreant/miscreant.rs/pull/39
+[#36]: https://github.com/miscreant/miscreant.rs/pull/36
+[#33]: https://github.com/miscreant/miscreant.rs/pull/33
 [0.4.2]: https://github.com/miscreant/miscreant.rs/pull/17
 [#16]: https://github.com/miscreant/miscreant.rs/pull/16
 [0.4.1]: https://github.com/miscreant/miscreant.rs/pull/15
