@@ -7,11 +7,14 @@
 #![allow(clippy::missing_safety_doc, clippy::too_many_arguments)]
 
 use crate::generic_array::typenum::marker_traits::Unsigned;
-use crate::{Aead, Aes128PmacSivAead, Aes128SivAead, Aes256PmacSivAead, Aes256SivAead};
+use crate::{Aead, Aes128SivAead, Aes256SivAead};
 use core::{ptr, slice};
 
+#[cfg(feature = "pmac")]
+use crate::{Aes128PmacSivAead, Aes256PmacSivAead};
+
 //
-// AES-128-SIV AEAD
+// AES-128-CMAC-SIV AEAD
 //
 
 /// AES-128-SIV AEAD: authenticated encryption
@@ -55,7 +58,7 @@ pub static crypto_aead_aes128siv_KEYBYTES: u32 = 32;
 pub static crypto_aead_aes128siv_TAGBYTES: u32 = 16;
 
 //
-// AES-256-SIV AEAD
+// AES-256-CMAC-SIV AEAD
 //
 
 /// AES-256-SIV AEAD: authenticated encryption
@@ -103,6 +106,7 @@ pub static crypto_aead_aes256siv_TAGBYTES: u32 = 16;
 //
 
 /// AES-128-PMAC-SIV AEAD: authenticated encryption
+#[cfg(feature = "pmac")]
 #[no_mangle]
 pub unsafe extern "C" fn crypto_aead_aes128pmacsiv_encrypt(
     ct: *mut u8,
@@ -119,6 +123,7 @@ pub unsafe extern "C" fn crypto_aead_aes128pmacsiv_encrypt(
 }
 
 /// AES-128-PMAC-SIV AEAD: authenticated decryption
+#[cfg(feature = "pmac")]
 #[no_mangle]
 pub unsafe extern "C" fn crypto_aead_aes128pmacsiv_decrypt(
     msg: *mut u8,
@@ -135,10 +140,12 @@ pub unsafe extern "C" fn crypto_aead_aes128pmacsiv_decrypt(
 }
 
 /// AES-128-PMAC-SIV key size
+#[cfg(feature = "pmac")]
 #[no_mangle]
 pub static crypto_aead_aes128pmacsiv_KEYBYTES: u32 = 32;
 
 /// AES-128-PMAC-SIV authenticator tag size
+#[cfg(feature = "pmac")]
 #[no_mangle]
 pub static crypto_aead_aes128pmacsiv_TAGBYTES: u32 = 16;
 
@@ -147,6 +154,7 @@ pub static crypto_aead_aes128pmacsiv_TAGBYTES: u32 = 16;
 //
 
 /// AES-256-PMAC-SIV AEAD: authenticated encryption
+#[cfg(feature = "pmac")]
 #[no_mangle]
 pub unsafe extern "C" fn crypto_aead_aes256pmacsiv_encrypt(
     ct: *mut u8,
@@ -163,6 +171,7 @@ pub unsafe extern "C" fn crypto_aead_aes256pmacsiv_encrypt(
 }
 
 /// AES-256-PMAC-SIV AEAD: authenticated decryption
+#[cfg(feature = "pmac")]
 #[no_mangle]
 pub unsafe extern "C" fn crypto_aead_aes256pmacsiv_decrypt(
     msg: *mut u8,
@@ -179,10 +188,12 @@ pub unsafe extern "C" fn crypto_aead_aes256pmacsiv_decrypt(
 }
 
 /// AES-128-SIV key size
+#[cfg(feature = "pmac")]
 #[no_mangle]
 pub static crypto_aead_aes256pmacsiv_KEYBYTES: u32 = 64;
 
 /// AES-128-SIV authenticator tag size
+#[cfg(feature = "pmac")]
 #[no_mangle]
 pub static crypto_aead_aes256pmacsiv_TAGBYTES: u32 = 16;
 

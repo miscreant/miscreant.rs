@@ -3,6 +3,9 @@
 
 use crate::{Aead, Aes128PmacSivAead, Aes128SivAead, Aes256PmacSivAead, Aes256SivAead, Error};
 
+#[cfg(feature = "alloc")]
+use alloc::vec::Vec;
+
 /// Size of a nonce required by STREAM in bytes
 pub const NONCE_SIZE: usize = 8;
 
@@ -58,6 +61,7 @@ impl<A: Aead> Encryptor<A> {
 
     /// Encrypt the next message in the stream, allocating and returning a
     /// `Vec<u8>` for the ciphertext
+    #[cfg(feature = "alloc")]
     pub fn encrypt_next(&mut self, ad: &[u8], plaintext: &[u8]) -> Vec<u8> {
         let ciphertext = self.alg.encrypt(self.nonce.as_slice(), ad, plaintext);
         self.nonce.increment();
@@ -66,6 +70,7 @@ impl<A: Aead> Encryptor<A> {
 
     /// Encrypt the final message in the stream, allocating and returning a
     /// `Vec<u8>` for the ciphertext
+    #[cfg(feature = "alloc")]
     pub fn encrypt_last(mut self, ad: &[u8], plaintext: &[u8]) -> Vec<u8> {
         self.alg.encrypt(&self.nonce.finish(), ad, plaintext)
     }
@@ -131,6 +136,7 @@ impl<A: Aead> Decryptor<A> {
 
     /// Decrypt the next message in the stream, allocating and returning a
     /// `Vec<u8>` for the plaintext
+    #[cfg(feature = "alloc")]
     pub fn decrypt_next(&mut self, ad: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, Error> {
         let plaintext = self.alg.decrypt(self.nonce.as_slice(), ad, ciphertext)?;
         self.nonce.increment();
@@ -139,6 +145,7 @@ impl<A: Aead> Decryptor<A> {
 
     /// Decrypt the next message in the stream, allocating and returning a
     /// `Vec<u8>` for the plaintext
+    #[cfg(feature = "alloc")]
     pub fn decrypt_last(mut self, ad: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, Error> {
         self.alg.decrypt(&self.nonce.finish(), ad, ciphertext)
     }
