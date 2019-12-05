@@ -22,6 +22,7 @@
 //!
 //! [AES-NI]: https://en.wikipedia.org/wiki/AES_instruction_set#x86_architecture_processors
 
+#![no_std]
 #![doc(html_root_url = "https://docs.rs/miscreant/0.4.2")]
 #![warn(
     missing_docs,
@@ -31,14 +32,31 @@
     unused_qualifications
 )]
 
+#[cfg(feature = "alloc")]
+#[macro_use]
+extern crate alloc;
+
+#[cfg(feature = "std")]
+extern crate std;
+
 mod aead;
 pub mod ffi;
 #[cfg(feature = "stream")]
 pub mod stream;
 
-pub use crate::aead::{Aead, Aes128PmacSivAead, Aes128SivAead, Aes256PmacSivAead, Aes256SivAead};
+pub use crate::aead::{Aead, Aes128SivAead, Aes256SivAead};
 pub use aes_siv::{
-    aead::generic_array,
-    aead::Error,
-    siv::{Aes128PmacSiv, Aes128Siv, Aes256PmacSiv, Aes256Siv},
+    aead::{generic_array, Error},
+    siv::{Aes128Siv, Aes256Siv},
 };
+
+#[cfg(feature = "pmac")]
+pub use crate::aead::{Aes128PmacSivAead, Aes256PmacSivAead};
+#[cfg(feature = "pmac")]
+pub use aes_siv::siv::{Aes128PmacSiv, Aes256PmacSiv};
+
+#[cfg(not(any(feature = "std", test)))]
+#[panic_handler]
+fn panic(_info: &core::panic::PanicInfo) -> ! {
+    loop {}
+}
