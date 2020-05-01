@@ -11,7 +11,7 @@ miscreant = { path = ".." }
 
 [dev-dependencies]
 criterion = "= 0.3.0"
-criterion-plot = "= 0.4.0"
+criterion-plot = "= 0.4.2"
 criterion-stats = "= 0.2.5"
 ring = "0.16"
 
