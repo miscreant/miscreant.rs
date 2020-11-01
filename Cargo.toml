@@ -23,7 +23,7 @@ aes = { version = "0.3", default-features = false }
 aes-siv = { version = "0.2", default-features = false }
 cmac = { version = "0.2", default-features = false }
 crypto-mac = { version = "0.7", default-features = false }
-ctr = { version = "0.3", default-features = false }
+ctr = { version = "0.6", default-features = false }
 pmac_crate = { package = "pmac", version = "0.2", optional = true, default-features = false }
 stream-cipher = { version = "0.3", default-features = false }
 
