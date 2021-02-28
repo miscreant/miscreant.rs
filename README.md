@@ -1,4 +1,4 @@
-🚨 DEPRECATED! 🚨
+# 🚨 DEPRECATED! 🚨
 
 Miscreant is no-longer maintained! The Rust successor is the [`aes-siv` crate](https://github.com/RustCrypto/AEADs/tree/master/aes-siv), which is the evolution of the original Miscreant codebase.
 
